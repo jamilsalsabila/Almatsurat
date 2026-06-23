@@ -17,6 +17,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
   const [disableTouchSwipe, setDisableTouchSwipe] = useState(false);
   const [touchMode, setTouchMode] = useState(false);
+  const [legacyIosSafariMode, setLegacyIosSafariMode] = useState(false);
   const lastTouchRef = useRef(0);
 
   useEffect(() => {
@@ -94,8 +95,11 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
     const hasTouchPoints = typeof navigator.maxTouchPoints === "number" ? navigator.maxTouchPoints > 0 : false;
     const isAppleTouchDevice = /iPhone|iPad|iPod/i.test(userAgent);
     const isSafariBrowser = /Safari/i.test(userAgent) && !/CriOS|FxiOS|EdgiOS/i.test(userAgent);
+    const iosVersionMatch = userAgent.match(/OS (\d+)_/i);
+    const iosMajorVersion = iosVersionMatch ? Number(iosVersionMatch[1]) : null;
     setTouchMode(hasTouchPoints || isAppleTouchDevice);
     setDisableTouchSwipe(isAppleTouchDevice && isSafariBrowser);
+    setLegacyIosSafariMode(Boolean(isAppleTouchDevice && isSafariBrowser && iosMajorVersion && iosMajorVersion <= 15));
   }, []);
 
   function bindTouchPress(action) {
@@ -157,15 +161,15 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
   const hasTimeVariant = morningPreview !== eveningPreview;
   const swipeHandlers = useSwipeable({
     delta: 36,
-    trackTouch: !disableTouchSwipe && !mobileSettingsOpen,
+    trackTouch: !disableTouchSwipe && !mobileSettingsOpen && !legacyIosSafariMode,
     preventScrollOnSwipe: false,
     onSwipedLeft: showNext,
     onSwipedRight: showPrevious,
   });
-  const frameSwipeHandlers = disableTouchSwipe || mobileSettingsOpen ? {} : swipeHandlers;
+  const frameSwipeHandlers = disableTouchSwipe || mobileSettingsOpen || legacyIosSafariMode ? {} : swipeHandlers;
 
   return (
-    <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}`}>
+    <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}${legacyIosSafariMode ? " reader-legacy-mobile" : ""}`}>
         <div className="reader-mode-toolbar">
           <div className="reader-mode-status">
             <span className="reader-mode-kicker">Mode Fokus</span>
@@ -231,7 +235,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
           </div>
         </div>
 
-        {mobileSettingsOpen ? (
+        {mobileSettingsOpen && !legacyIosSafariMode ? (
           <div className="reader-settings-sheet" role="dialog" aria-modal="true" aria-label="Pengaturan bacaan">
             <button className="reader-settings-backdrop" {...bindTouchPress(() => setMobileSettingsOpen(false))} type="button" aria-label="Tutup pengaturan" />
             <div className="reader-settings-panel">

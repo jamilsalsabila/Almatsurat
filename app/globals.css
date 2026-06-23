@@ -725,6 +725,25 @@ button {
   color: rgba(245, 248, 249, 0.9);
 }
 
+.reader-legacy-mobile {
+  padding-bottom: 28px;
+}
+
+.reader-legacy-mobile .reader-mode-toolbar {
+  position: static;
+}
+
+.reader-legacy-mobile .reader-bottom-nav {
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+  margin-top: 14px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
 .reader-mode-shell.reader-dark .reader-mode-progress {
   background: rgba(255, 255, 255, 0.12);
 }
@@ -1235,6 +1254,16 @@ button {
     display: none;
   }
 
+  .reader-legacy-mobile .reader-mode-actions {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .reader-legacy-mobile .reader-mobile-settings-trigger {
+    display: none;
+  }
+
   .reader-mode-status {
     min-width: 0;
   }
@@ -1284,6 +1313,12 @@ button {
     gap: 10px;
     padding: 6px;
     bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .reader-legacy-mobile .reader-bottom-nav {
+    width: 100%;
+    padding: 0;
+    gap: 8px;
   }
 
   .reader-mode-nav-button {
@@ -1467,6 +1502,15 @@ button {
   .reader-mode-shell.reader-dark .reader-settings-font-row {
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .reader-legacy-mobile .reader-mode-toolbar {
+    align-items: stretch;
+  }
+
+  .reader-legacy-mobile .reader-mode-actions .reader-segment,
+  .reader-legacy-mobile .reader-mode-actions .reader-reset {
+    width: 100%;
   }
 
 }
