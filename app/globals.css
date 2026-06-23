@@ -1,0 +1,1300 @@
+:root {
+  --font-body: var(--font-naskh), serif;
+  --font-quran: var(--font-uthmani), var(--font-naskh), serif;
+  --shadow-soft: 0 14px 36px rgba(28, 43, 48, 0.05);
+  --shadow-card: 0 8px 22px rgba(24, 37, 41, 0.035);
+  --border-soft: rgba(21, 33, 36, 0.085);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: #f2f5f7;
+  color: #162328;
+}
+
+.page-dark {
+  color: #edf4f6;
+}
+
+.page-dark .mushaf-brand-text,
+.page-dark .mushaf-collection-meta,
+.page-dark .mushaf-subtitle,
+.page-dark .intro-translation,
+.page-dark .version-link,
+.page-dark .mushaf-home-copy,
+.page-dark .mushaf-home-card-copy,
+.page-dark .mushaf-home-note p {
+  color: rgba(237, 244, 246, 0.76);
+}
+
+.page-dark .mushaf-version-switcher,
+.page-dark .intro-card,
+.page-dark .mushaf-brand-mark {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.page-dark .version-link {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.site-shell {
+  min-height: 100vh;
+}
+
+.site-container {
+  width: min(980px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+}
+
+.mushaf-hero {
+  position: relative;
+  padding: 18px 0 24px;
+  border-bottom: 1px solid;
+}
+
+.mushaf-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mushaf-eyebrow {
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.mushaf-collection-meta {
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.46);
+}
+
+.mushaf-title {
+  margin: 0;
+  font-size: clamp(38px, 6vw, 72px);
+  line-height: 1.05;
+}
+
+.mushaf-subtitle {
+  margin: 0;
+  max-width: 680px;
+  font-size: 17px;
+  color: rgba(17, 17, 17, 0.58);
+}
+
+.hero-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.6), transparent 32%);
+  pointer-events: none;
+}
+
+.hero-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.arabic-intro {
+  font-family: var(--font-quran);
+  direction: rtl;
+  text-align: right;
+}
+
+.naskh-text {
+  font-family: var(--font-body);
+}
+
+.quran-text {
+  font-family: var(--font-quran);
+}
+
+.grid-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.landing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 24px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-card);
+}
+
+.mushaf-home {
+  display: grid;
+  gap: 34px;
+}
+
+.mushaf-home-hero {
+  display: grid;
+  gap: 18px;
+  padding: 8px 0 10px;
+}
+
+.mushaf-home-kicker {
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.mushaf-home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr);
+  gap: 30px;
+  align-items: start;
+}
+
+.mushaf-home-copy {
+  margin: 0;
+  max-width: 760px;
+  font-size: 18px;
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.mushaf-home-note {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+}
+
+.mushaf-home-note-mark {
+  font-size: 24px;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.mushaf-home-note p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.58);
+}
+
+.mushaf-home-section-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mushaf-home-section-label {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.52);
+  white-space: nowrap;
+}
+
+.mushaf-home-section-line {
+  height: 1px;
+  flex: 1;
+  background: rgba(17, 17, 17, 0.08);
+}
+
+.mushaf-home-grid-two {
+  gap: 22px;
+}
+
+.mushaf-home-card {
+  gap: 12px;
+  padding: 24px 24px 22px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.mushaf-home-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mushaf-home-chip {
+  background: transparent;
+}
+
+.mushaf-home-card-mark {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.mushaf-home-card-title {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.15;
+}
+
+.mushaf-home-card-copy {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.62);
+}
+
+.mushaf-home-link {
+  padding-inline: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.mushaf-home-link:hover {
+  background: transparent;
+}
+
+.landing-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: white;
+}
+
+.landing-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(17, 17, 17, 0.05);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.landing-link:hover {
+  transform: translateY(-1px);
+  background: rgba(17, 17, 17, 0.08);
+}
+
+.version-page {
+  position: relative;
+  padding: 26px 0 80px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.mushaf-topbar {
+  margin-bottom: 30px;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.mushaf-brand-mark {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid;
+}
+
+.mushaf-brand-text {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.mushaf-version-switcher {
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+}
+
+.version-switcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.version-link {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(17, 17, 17, 0.07);
+  font-size: 14px;
+}
+
+.version-link.active {
+  color: white;
+}
+
+.header-stack {
+  display: grid;
+  gap: 22px;
+  margin-bottom: 34px;
+  transition: opacity 180ms ease;
+}
+
+.mushaf-topbar.chrome-hidden,
+.mushaf-header-stack.chrome-hidden {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.intro-card {
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 28px;
+  padding: 28px 32px;
+  box-shadow: none;
+}
+
+.intro-card .arabic-intro {
+  font-size: clamp(30px, 4.4vw, 44px);
+  line-height: 2;
+  margin: 0;
+}
+
+.intro-translation {
+  margin: 10px 0 0;
+  font-size: 15px;
+  color: rgba(17, 17, 17, 0.58);
+}
+
+.cards-stack {
+  display: grid;
+  gap: 28px;
+}
+
+.reader-reset {
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.56);
+  border-radius: 999px;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.58);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reader-reset:hover {
+  color: rgba(17, 17, 17, 0.8);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.reader-mode-shell {
+  display: grid;
+  gap: 18px;
+  padding-bottom: 110px;
+}
+
+.reader-mode-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  padding: 12px 0 10px;
+  background: linear-gradient(180deg, rgba(242, 245, 247, 0.97), rgba(242, 245, 247, 0.9));
+  border-bottom: 1px solid rgba(17, 17, 17, 0.05);
+  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.03);
+}
+
+.reader-mode-status {
+  display: grid;
+  gap: 8px;
+}
+
+.reader-mode-kicker {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.48);
+}
+
+.reader-mode-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: rgba(17, 17, 17, 0.62);
+}
+
+.reader-mode-time-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.reader-mode-time-pill.morning {
+  color: #1a5660;
+  border-color: rgba(26, 86, 96, 0.18);
+  background: rgba(26, 86, 96, 0.08);
+}
+
+.reader-mode-time-pill.evening {
+  color: #6b4d1f;
+  border-color: rgba(107, 77, 31, 0.18);
+  background: rgba(107, 77, 31, 0.08);
+}
+
+.reader-mode-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reader-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+.reader-segment-button {
+  border: 0;
+  background: transparent;
+  min-width: 52px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: rgba(17, 17, 17, 0.62);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reader-segment-button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.reader-segment-button.active {
+  color: white;
+}
+
+.reader-font-indicator {
+  min-width: 46px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.62);
+}
+
+.reader-mode-progress {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.06);
+  overflow: hidden;
+}
+
+.reader-mode-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.reader-mode-frame {
+  border: 1px solid;
+  border-radius: 30px;
+  padding: 16px 18px 18px;
+  background: rgba(255, 255, 255, 0.54);
+  box-shadow: var(--shadow-soft);
+}
+
+.reader-mode-nav {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.reader-mode-nav-center {
+  text-align: center;
+}
+
+.reader-mode-nav-title {
+  font-size: 22px;
+}
+
+.reader-mode-nav-help {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.45);
+}
+
+.reader-mode-variant-preview {
+  margin: 0 2px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.76;
+}
+
+.reader-mode-nav-button {
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  min-height: 48px;
+  padding: 12px 16px;
+  cursor: pointer;
+  color: rgba(17, 17, 17, 0.82);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reader-bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 20;
+  width: min(680px, calc(100vw - 28px));
+  padding: 10px;
+  border-radius: 22px;
+  border: 1px solid rgba(17, 17, 17, 0.07);
+  background: rgba(242, 245, 247, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 30px rgba(24, 37, 41, 0.1);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.reader-card::before {
+  inset: 0;
+  border-radius: 24px;
+}
+
+.reader-card .zikir-card-header {
+  padding: 14px 16px 0;
+}
+
+.reader-card .zikir-card-body {
+  padding: 24px 26px 18px;
+}
+
+.reader-card .counter-area {
+  padding: 0 16px 12px;
+}
+
+.reader-context {
+  padding: 4px 16px 0;
+  font-size: 13px;
+  opacity: 0.84;
+}
+
+.reader-card .reading-line {
+  font-size: var(--reader-quran-size, 34pt);
+  line-height: 2.22;
+}
+
+.reader-card .reading-line.doa {
+  font-size: var(--reader-doa-size, 28pt);
+}
+
+.reader-card .basmallah-line {
+  font-size: var(--reader-basmallah-size, 36pt);
+  margin-bottom: 22px;
+}
+
+.reader-card-stage {
+  will-change: transform, opacity;
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.reader-card-stage.is-from-next {
+  animation-name: readerCardInNext;
+}
+
+.reader-card-stage.is-from-previous {
+  animation-name: readerCardInPrevious;
+}
+
+.reader-mode-shell.reader-dark .reader-mode-status,
+.reader-mode-shell.reader-dark .reader-mode-meta,
+.reader-mode-shell.reader-dark .reader-mode-kicker,
+.reader-mode-shell.reader-dark .reader-mode-nav-help,
+.reader-mode-shell.reader-dark .reader-mode-variant-preview,
+.reader-mode-shell.reader-dark .counter-hint,
+.reader-mode-shell.reader-dark .mushaf-focus-button,
+.reader-mode-shell.reader-dark .reader-reset,
+.reader-mode-shell.reader-dark .reader-segment-button,
+.reader-mode-shell.reader-dark .reader-context,
+.reader-mode-shell.reader-dark .reader-font-indicator {
+  color: rgba(235, 241, 243, 0.72);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-progress {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-toolbar {
+  background: linear-gradient(180deg, rgba(15, 21, 24, 0.98), rgba(15, 21, 24, 0.92));
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.reader-mode-shell.reader-dark .reader-bottom-nav {
+  background: rgba(15, 21, 24, 0.9);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-frame {
+  background: linear-gradient(180deg, rgba(18, 24, 28, 0.96), rgba(24, 31, 36, 0.94));
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.28);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-nav-button,
+.reader-mode-shell.reader-dark .reader-reset,
+.reader-mode-shell.reader-dark .reader-segment,
+.reader-mode-shell.reader-dark .reader-segment-button,
+.reader-mode-shell.reader-dark .reader-mode-time-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.reader-mode-shell.reader-dark .reader-segment-button:not(.active):not(:disabled),
+.reader-mode-shell.reader-dark .reader-reset,
+.reader-mode-shell.reader-dark .reader-font-indicator {
+  color: rgba(245, 248, 249, 0.82);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-time-pill.morning {
+  color: #9fd9e2;
+  background: rgba(119, 188, 199, 0.15);
+  border-color: rgba(119, 188, 199, 0.24);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-time-pill.evening {
+  color: #e1c798;
+  background: rgba(150, 117, 70, 0.18);
+  border-color: rgba(150, 117, 70, 0.24);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-nav-button:hover,
+.reader-mode-shell.reader-dark .reader-reset:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(245, 248, 249, 0.92);
+}
+
+.reader-mode-shell.reader-dark .reader-mode-nav-button {
+  color: rgba(245, 248, 249, 0.92);
+}
+
+.mushaf-card.reader-dark-card::before {
+  background:
+    linear-gradient(180deg, rgba(20, 26, 30, 0.98), rgba(16, 21, 24, 0.97)),
+    radial-gradient(circle at top left, rgba(119, 188, 199, 0.08), transparent 42%);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+}
+
+.reader-dark-card .reading-line,
+.reader-dark-card .basmallah-line,
+.reader-dark-card .zikir-title,
+.reader-dark-card .counter-value,
+.reader-dark-card .mushaf-repeat,
+.reader-dark-card .mushaf-repeat-value,
+.reader-dark-card .mushaf-repeat-label,
+.reader-dark-card .counter-label {
+  color: #f2f5f6 !important;
+}
+
+.reader-dark-card .ayat-number {
+  color: rgba(245, 248, 249, 0.84);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reader-dark-card .counter-area {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.reader-dark-card .progress-track {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.reader-dark-card .mushaf-sequence {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(245, 248, 249, 0.84) !important;
+}
+
+.reader-dark-card .mushaf-rule,
+.reader-dark-card .mushaf-divider-line {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.reader-dark-card .mushaf-divider-mark {
+  color: rgba(245, 248, 249, 0.62) !important;
+}
+
+.reader-dark-card .mushaf-repeat {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.reader-dark-card .tap-zone {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.reader-dark-card .tap-zone.is-pressing {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.reader-dark-card .mushaf-counter-button {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.page-dark .intro-card {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.page-dark .mushaf-sequence,
+.page-dark .mushaf-repeat {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@keyframes readerCardInNext {
+  from {
+    opacity: 0;
+    transform: translate3d(18px, 0, 0) scale(0.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes readerCardInPrevious {
+  from {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0) scale(0.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-card-stage {
+    animation: none;
+  }
+
+  .reader-bottom-nav,
+  .reader-mode-toolbar,
+  .progress-fill {
+    transition: none;
+  }
+}
+
+.zikir-card {
+  overflow: hidden;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zikir-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 14px;
+}
+
+.zikir-title {
+  font-size: 32px;
+  line-height: 1.3;
+  margin: 0;
+  direction: rtl;
+  text-align: right;
+}
+
+.mushaf-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mushaf-sequence {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.mushaf-rule {
+  width: 38px;
+  height: 1px;
+  display: inline-block;
+}
+
+.repeat-badge {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mushaf-repeat {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 8px 14px;
+  border-radius: 999px;
+  border: 1px solid;
+  background: rgba(255, 255, 255, 0.55);
+  min-width: 112px;
+  justify-content: space-between;
+}
+
+.mushaf-repeat-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.mushaf-repeat-value {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.zikir-card-body {
+  padding: 28px 28px 22px;
+}
+
+.mushaf-card {
+  position: relative;
+  padding: 0 0 8px;
+}
+
+.mushaf-card::before {
+  content: "";
+  position: absolute;
+  inset: 52px 0 0;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.72)),
+    radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 38%);
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: var(--shadow-card);
+  z-index: 0;
+}
+
+.mushaf-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mushaf-card-header {
+  padding-inline: 8px;
+}
+
+.mushaf-card-body {
+  margin-top: 0;
+}
+
+.basmallah-line {
+  direction: rtl;
+  text-align: center;
+  font-size: clamp(30px, 3.2vw, 42px);
+  line-height: 1.9;
+  margin-bottom: 18px;
+}
+
+.reading-line {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: plaintext;
+  font-size: clamp(31px, 3.3vw, 45px);
+  line-height: 2.14;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  color: #111111;
+}
+
+.reading-line.doa {
+  font-family: var(--font-body);
+  font-size: clamp(25px, 2.9vw, 37px);
+}
+
+.segment {
+  display: inline;
+}
+
+.segment + .segment::before {
+  content: " ";
+  white-space: pre;
+}
+
+.ayat-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  margin-inline-start: 12px;
+  vertical-align: middle;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1;
+  color: rgba(17, 17, 17, 0.62);
+  background: rgba(230, 234, 236, 0.9);
+}
+
+.counter-area {
+  margin-top: 10px;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  background: transparent;
+}
+
+.progress-track {
+  height: 3px;
+  width: 100%;
+  background: rgba(17, 17, 17, 0.05);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 220ms ease;
+}
+
+.tap-zone {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 20px 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.tap-zone:active {
+  transform: scale(0.998);
+}
+
+.tap-zone.is-pressing {
+  background: rgba(17, 17, 17, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.04);
+}
+
+.counter-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.counter-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.counter-inline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.counter-value {
+  font-weight: 700;
+  font-size: 19px;
+  min-width: 52px;
+}
+
+.counter-hint {
+  font-size: 14px;
+  color: rgba(17, 17, 17, 0.48);
+}
+
+.counter-done {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: white;
+}
+
+.mushaf-counter-area {
+  padding-top: 2px;
+}
+
+.mushaf-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 2px 10px;
+}
+
+.mushaf-focus-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.54);
+  cursor: pointer;
+}
+
+.mushaf-focus-button:hover {
+  color: rgba(17, 17, 17, 0.76);
+}
+
+.mushaf-tap-zone {
+  padding-inline: 2px;
+  gap: 18px;
+}
+
+.mushaf-counter-button {
+  border: 1px solid transparent;
+  background: transparent;
+  min-width: 72px;
+  text-align: center;
+  padding-block: 12px;
+}
+
+.mushaf-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0 0;
+}
+
+.mushaf-divider-line {
+  height: 1px;
+  flex: 1;
+}
+
+.mushaf-divider-mark {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.72;
+}
+
+
+.empty-state {
+  padding: 80px 0;
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .mushaf-home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-container {
+    width: min(980px, calc(100% - 20px));
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mushaf-version-switcher {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .version-link {
+    flex: 1;
+    text-align: center;
+  }
+
+  .reader-mode-toolbar {
+    align-items: stretch;
+    top: 0;
+    margin-inline: -2px;
+  }
+
+  .reader-mode-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .reader-segment {
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .reader-reset {
+    width: 100%;
+    text-align: center;
+  }
+
+  .reader-mode-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .reader-mode-nav-button {
+    width: 100%;
+  }
+
+  .reader-mode-nav-center {
+    order: -1;
+  }
+
+  .reader-mode-frame {
+    padding: 12px 12px 14px;
+    border-radius: 24px;
+  }
+
+  .reader-bottom-nav {
+    width: calc(100vw - 20px);
+    padding: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .zikir-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mushaf-meta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .mushaf-repeat {
+    min-width: 0;
+  }
+
+  .mushaf-hero-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .reading-line {
+    font-size: clamp(26px, 7vw, 38px);
+  }
+
+  .reading-line.doa {
+    font-size: clamp(22px, 6vw, 32px);
+  }
+
+  .mushaf-card::before {
+    inset: 64px 0 0;
+  }
+
+  .tap-zone {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 6px 16px;
+  }
+
+  .counter-inline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .mushaf-divider {
+    gap: 10px;
+  }
+
+  .reader-segment-button {
+    flex: 1 1 auto;
+  }
+
+}

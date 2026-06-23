@@ -1,0 +1,10 @@
+.next
+node_modules
+.DS_Store
+.vercel
+__pycache__
+output
+dist
+build
+coverage
+*.log

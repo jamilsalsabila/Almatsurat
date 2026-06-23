@@ -1,0 +1,21 @@
+{
+  "name": "almatsurat",
+  "version": "1.0.0",
+  "description": "Next.js Almatsurat web app for Vercel deployment",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "extract:data": "python3 scripts/extract_almatsurat_data.py"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^16.2.9",
+    "playwright": "^1.61.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-swipeable": "^7.0.2"
+  }
+}
