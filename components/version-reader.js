@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useSwipeable } from "react-swipeable";
 import ZikirCard from "@/components/zikir-card";
 import { applyTimeMode } from "@/lib/time-mode";
 
@@ -159,14 +158,6 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
   const morningPreview = applyTimeMode(activeCard.entries[0]?.text ?? "", "pagi");
   const eveningPreview = applyTimeMode(activeCard.entries[0]?.text ?? "", "petang");
   const hasTimeVariant = morningPreview !== eveningPreview;
-  const swipeHandlers = useSwipeable({
-    delta: 36,
-    trackTouch: !disableTouchSwipe && !mobileSettingsOpen && !legacyIosSafariMode,
-    preventScrollOnSwipe: false,
-    onSwipedLeft: showNext,
-    onSwipedRight: showPrevious,
-  });
-  const frameSwipeHandlers = disableTouchSwipe || mobileSettingsOpen || legacyIosSafariMode ? {} : swipeHandlers;
 
   return (
     <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}${legacyIosSafariMode ? " reader-legacy-mobile" : ""}`}>
@@ -309,13 +300,13 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
           <div className="reader-mode-progress-fill" style={{ width: `${progressPercent}%`, backgroundColor: darkMode ? theme.darkAccent : theme.accentStrong }} />
         </div>
 
-        <div className="reader-mode-frame" style={{ borderColor: darkMode ? `${theme.darkAccent}20` : `${theme.accent}18` }} {...frameSwipeHandlers}>
+        <div className="reader-mode-frame" style={{ borderColor: darkMode ? `${theme.darkAccent}20` : `${theme.accent}18` }}>
           <div className="reader-mode-nav">
             <div className="reader-mode-nav-center">
               <span className="reader-mode-nav-title naskh-text" style={{ color: darkMode ? theme.darkAccent : theme.accent }}>
                 {theme.title}
               </span>
-              <span className="reader-mode-nav-help">Swipe kiri/kanan untuk pindah bacaan</span>
+              <span className="reader-mode-nav-help">Gunakan tombol bawah untuk pindah bacaan</span>
             </div>
           </div>
 
