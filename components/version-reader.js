@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import ZikirCard from "@/components/zikir-card";
 import { applyTimeMode } from "@/lib/time-mode";
@@ -14,6 +14,10 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
   const [fontSizePt, setFontSizePt] = useState(DEFAULT_FONT_PT);
   const [timeMode, setTimeMode] = useState("pagi");
   const [navDirection, setNavDirection] = useState("next");
+  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
+  const [disableTouchSwipe, setDisableTouchSwipe] = useState(false);
+  const [touchMode, setTouchMode] = useState(false);
+  const lastTouchRef = useRef(0);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -68,6 +72,52 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
     return () => onChromeHiddenChange(false);
   }, [onChromeHiddenChange]);
 
+  useEffect(() => {
+    if (!mobileSettingsOpen || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileSettingsOpen]);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") {
+      return;
+    }
+
+    const userAgent = navigator.userAgent;
+    const hasTouchPoints = typeof navigator.maxTouchPoints === "number" ? navigator.maxTouchPoints > 0 : false;
+    const isAppleTouchDevice = /iPhone|iPad|iPod/i.test(userAgent);
+    const isSafariBrowser = /Safari/i.test(userAgent) && !/CriOS|FxiOS|EdgiOS/i.test(userAgent);
+    setTouchMode(hasTouchPoints || isAppleTouchDevice);
+    setDisableTouchSwipe(isAppleTouchDevice && isSafariBrowser);
+  }, []);
+
+  function bindTouchPress(action) {
+    return {
+      onClick: () => {
+        if (touchMode && Date.now() - lastTouchRef.current < 500) {
+          return;
+        }
+        action();
+      },
+      onTouchEnd: (event) => {
+        if (!touchMode) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        lastTouchRef.current = Date.now();
+        action();
+      },
+    };
+  }
+
   function showPrevious() {
     setNavDirection("previous");
     setActiveIndex((current) => (current - 1 + data.cards.length) % data.cards.length);
@@ -106,11 +156,13 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
   const eveningPreview = applyTimeMode(activeCard.entries[0]?.text ?? "", "petang");
   const hasTimeVariant = morningPreview !== eveningPreview;
   const swipeHandlers = useSwipeable({
-    delta: 30,
-    trackTouch: true,
+    delta: 36,
+    trackTouch: !disableTouchSwipe && !mobileSettingsOpen,
+    preventScrollOnSwipe: false,
     onSwipedLeft: showNext,
     onSwipedRight: showPrevious,
   });
+  const frameSwipeHandlers = disableTouchSwipe || mobileSettingsOpen ? {} : swipeHandlers;
 
   return (
     <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}`}>
@@ -128,11 +180,15 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
             </div>
           </div>
 
+          <button className="reader-mobile-settings-trigger" {...bindTouchPress(() => setMobileSettingsOpen(true))} type="button">
+            Pengaturan
+          </button>
+
           <div className="reader-mode-actions">
             <div className="reader-segment">
               <button
                 className={`reader-segment-button${darkMode ? " active" : ""}`}
-                onClick={() => onDarkModeChange(!darkMode)}
+                {...bindTouchPress(() => onDarkModeChange(!darkMode))}
                 style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
                 type="button"
               >
@@ -143,7 +199,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
             <div className="reader-segment">
               <button
                 className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
-                onClick={() => setTimeMode("pagi")}
+                {...bindTouchPress(() => setTimeMode("pagi"))}
                 style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
                 type="button"
               >
@@ -151,7 +207,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
               </button>
               <button
                 className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
-                onClick={() => setTimeMode("petang")}
+                {...bindTouchPress(() => setTimeMode("petang"))}
                 style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
                 type="button"
               >
@@ -160,26 +216,96 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
             </div>
 
             <div className="reader-segment">
-              <button className="reader-segment-button" disabled={fontSizePt <= MIN_FONT_PT} onClick={decreaseFont} type="button">
+              <button className="reader-segment-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
                 Perkecil
               </button>
               <span className="reader-font-indicator">{fontSizePt}pt</span>
-              <button className="reader-segment-button" disabled={fontSizePt >= MAX_FONT_PT} onClick={increaseFont} type="button">
+              <button className="reader-segment-button" disabled={fontSizePt >= MAX_FONT_PT} {...bindTouchPress(increaseFont)} type="button">
                 Perbesar
               </button>
             </div>
 
-            <button className="reader-reset" onClick={handleResetAll} type="button">
+            <button className="reader-reset" {...bindTouchPress(handleResetAll)} type="button">
               Reset semua hitungan
             </button>
           </div>
         </div>
 
+        {mobileSettingsOpen ? (
+          <div className="reader-settings-sheet" role="dialog" aria-modal="true" aria-label="Pengaturan bacaan">
+            <button className="reader-settings-backdrop" {...bindTouchPress(() => setMobileSettingsOpen(false))} type="button" aria-label="Tutup pengaturan" />
+            <div className="reader-settings-panel">
+              <div className="reader-settings-header">
+                <div>
+                  <span className="reader-settings-kicker">Pengaturan</span>
+                  <h2 className="reader-settings-title">Sesuaikan tampilan baca</h2>
+                </div>
+                <button className="reader-settings-close" {...bindTouchPress(() => setMobileSettingsOpen(false))} type="button">
+                  Tutup
+                </button>
+              </div>
+
+              <div className="reader-settings-group">
+                <span className="reader-settings-label">Mode tampilan</span>
+                <div className="reader-segment reader-settings-segment">
+                  <button
+                    className={`reader-segment-button${darkMode ? " active" : ""}`}
+                    {...bindTouchPress(() => onDarkModeChange(!darkMode))}
+                    style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
+                    type="button"
+                  >
+                    {darkMode ? "Dark On" : "Dark Off"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="reader-settings-group">
+                <span className="reader-settings-label">Waktu baca</span>
+                <div className="reader-segment reader-settings-segment">
+                  <button
+                    className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
+                    {...bindTouchPress(() => setTimeMode("pagi"))}
+                    style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
+                    type="button"
+                  >
+                    Pagi
+                  </button>
+                  <button
+                    className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
+                    {...bindTouchPress(() => setTimeMode("petang"))}
+                    style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
+                    type="button"
+                  >
+                    Petang
+                  </button>
+                </div>
+              </div>
+
+              <div className="reader-settings-group">
+                <span className="reader-settings-label">Ukuran huruf</span>
+                <div className="reader-settings-font-row">
+                  <button className="reader-segment-button reader-settings-font-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
+                    Perkecil
+                  </button>
+                  <span className="reader-font-indicator reader-settings-font-indicator">{fontSizePt}pt</span>
+                  <button className="reader-segment-button reader-settings-font-button" disabled={fontSizePt >= MAX_FONT_PT} {...bindTouchPress(increaseFont)} type="button">
+                    Perbesar
+                  </button>
+                </div>
+              </div>
+
+              <button className="reader-reset reader-settings-reset" {...bindTouchPress(handleResetAll)} type="button">
+                Reset semua hitungan
+              </button>
+            </div>
+          </div>
+        ) : null}
+
         <div className="reader-mode-progress">
           <div className="reader-mode-progress-fill" style={{ width: `${progressPercent}%`, backgroundColor: darkMode ? theme.darkAccent : theme.accentStrong }} />
         </div>
 
-        <div className="reader-mode-frame" style={{ borderColor: darkMode ? `${theme.darkAccent}20` : `${theme.accent}18` }} {...swipeHandlers}>
+        <div className="reader-mode-frame" style={{ borderColor: darkMode ? `${theme.darkAccent}20` : `${theme.accent}18` }} {...frameSwipeHandlers}>
           <div className="reader-mode-nav">
             <div className="reader-mode-nav-center">
               <span className="reader-mode-nav-title naskh-text" style={{ color: darkMode ? theme.darkAccent : theme.accent }}>
@@ -213,6 +339,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
               index={activeIndex}
               readerMode
               storageKey={`${data.slug}-count-${activeIndex}`}
+              touchMode={touchMode}
               theme={theme}
               timeMode={timeMode}
             />
@@ -220,10 +347,10 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
         </div>
 
         <div className="reader-bottom-nav">
-          <button className="reader-mode-nav-button" onClick={showPrevious} type="button">
+          <button className="reader-mode-nav-button" {...bindTouchPress(showPrevious)} type="button">
             Sebelumnya
           </button>
-          <button className="reader-mode-nav-button" onClick={showNext} type="button">
+          <button className="reader-mode-nav-button" {...bindTouchPress(showNext)} type="button">
             Berikutnya
           </button>
         </div>

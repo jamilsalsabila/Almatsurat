@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyTimeMode } from "@/lib/time-mode";
 
 const arabicDigits = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
@@ -21,12 +21,14 @@ export default function ZikirCard({
   onFocus,
   storageKey,
   readerMode = false,
+  touchMode = false,
   timeMode = "pagi",
 }) {
   const [count, setCount] = useState(0);
   const progress = Math.min((count / card.count) * 100, 100);
   const complete = count >= card.count;
   const [isPressing, setIsPressing] = useState(false);
+  const lastTouchRef = useRef(0);
   const basmallahEntries = card.entries.filter((entry) => entry.type === "basmallah");
   const mainEntries = card.entries.filter((entry) => entry.type !== "basmallah");
 
@@ -56,6 +58,26 @@ export default function ZikirCard({
 
   function handleTap() {
     setCount((current) => (current >= card.count ? 0 : current + 1));
+  }
+
+  function bindTouchPress(action) {
+    return {
+      onClick: () => {
+        if (touchMode && Date.now() - lastTouchRef.current < 500) {
+          return;
+        }
+        action();
+      },
+      onTouchEnd: (event) => {
+        if (!touchMode) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        lastTouchRef.current = Date.now();
+        action();
+      },
+    };
   }
 
   const dynamicFontVars = readerMode
@@ -123,7 +145,7 @@ export default function ZikirCard({
       <div className="counter-area mushaf-counter-area">
         {!readerMode && onFocus ? (
           <div className="mushaf-actions">
-            <button className="mushaf-focus-button" onClick={onFocus} type="button">
+            <button className="mushaf-focus-button" {...bindTouchPress(onFocus)} type="button">
               Fokus bacaan
             </button>
           </div>
@@ -134,7 +156,7 @@ export default function ZikirCard({
         <button
           className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`}
           type="button"
-          onClick={handleTap}
+          {...bindTouchPress(handleTap)}
           onPointerDown={() => setIsPressing(true)}
           onPointerUp={() => setIsPressing(false)}
           onPointerLeave={() => setIsPressing(false)}

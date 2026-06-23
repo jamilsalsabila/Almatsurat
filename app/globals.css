@@ -469,6 +469,19 @@ button {
   gap: 8px;
 }
 
+.reader-mobile-settings-trigger {
+  display: none;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.68);
+  color: rgba(17, 17, 17, 0.72);
+  border-radius: 999px;
+  min-height: 42px;
+  padding: 10px 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .reader-mode-kicker {
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -688,6 +701,10 @@ button {
   animation-name: readerCardInPrevious;
 }
 
+.reader-settings-sheet {
+  display: none;
+}
+
 .reader-mode-shell.reader-dark .reader-mode-status,
 .reader-mode-shell.reader-dark .reader-mode-meta,
 .reader-mode-shell.reader-dark .reader-mode-kicker,
@@ -700,6 +717,12 @@ button {
 .reader-mode-shell.reader-dark .reader-context,
 .reader-mode-shell.reader-dark .reader-font-indicator {
   color: rgba(235, 241, 243, 0.72);
+}
+
+.reader-mode-shell.reader-dark .reader-mobile-settings-trigger {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(245, 248, 249, 0.9);
 }
 
 .reader-mode-shell.reader-dark .reader-mode-progress {
@@ -1202,14 +1225,30 @@ button {
   }
 
   .reader-mode-toolbar {
-    align-items: stretch;
+    align-items: center;
     top: 0;
     margin-inline: -2px;
+    padding: 10px 0 8px;
   }
 
   .reader-mode-actions {
-    width: 100%;
-    justify-content: flex-start;
+    display: none;
+  }
+
+  .reader-mode-status {
+    min-width: 0;
+  }
+
+  .reader-mode-meta {
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .reader-mobile-settings-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
   .reader-segment {
@@ -1241,9 +1280,16 @@ button {
   }
 
   .reader-bottom-nav {
-    width: calc(100vw - 20px);
-    padding: 8px;
+    width: calc(100vw - 28px);
+    gap: 10px;
+    padding: 6px;
     bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .reader-mode-nav-button {
+    min-height: 42px;
+    padding: 10px 12px;
+    font-size: 15px;
   }
 
   .zikir-card-header {
@@ -1295,6 +1341,132 @@ button {
 
   .reader-segment-button {
     flex: 1 1 auto;
+  }
+
+  .reader-settings-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: block;
+    pointer-events: none;
+    isolation: isolate;
+  }
+
+  .reader-settings-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border: 0;
+    background: rgba(14, 19, 21, 0.42);
+    pointer-events: auto;
+  }
+
+  .reader-settings-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: grid;
+    gap: 16px;
+    padding: 20px 16px calc(18px + env(safe-area-inset-bottom));
+    border-radius: 24px 24px 0 0;
+    background: rgba(247, 249, 250, 0.98);
+    box-shadow: 0 -18px 42px rgba(14, 19, 21, 0.18);
+    pointer-events: auto;
+    transform: translateZ(0);
+  }
+
+  .reader-settings-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .reader-settings-kicker {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(17, 17, 17, 0.42);
+  }
+
+  .reader-settings-title {
+    margin: 0;
+    font-size: 20px;
+    color: rgba(17, 17, 17, 0.82);
+  }
+
+  .reader-settings-close {
+    border: 0;
+    background: transparent;
+    color: rgba(17, 17, 17, 0.62);
+    min-height: 42px;
+    padding: 8px 0 8px 12px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .reader-settings-group {
+    display: grid;
+    gap: 8px;
+  }
+
+  .reader-settings-label {
+    font-size: 13px;
+    color: rgba(17, 17, 17, 0.56);
+  }
+
+  .reader-settings-segment {
+    width: 100%;
+  }
+
+  .reader-settings-font-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(17, 17, 17, 0.06);
+  }
+
+  .reader-settings-font-button {
+    min-width: 0;
+    min-height: 46px;
+  }
+
+  .reader-settings-font-indicator {
+    min-width: 54px;
+  }
+
+  .reader-settings-reset {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .reader-mode-shell.reader-dark .reader-settings-panel {
+    background: rgba(16, 21, 24, 0.98);
+    box-shadow: 0 -18px 42px rgba(0, 0, 0, 0.42);
+  }
+
+  .reader-mode-shell.reader-dark .reader-settings-kicker,
+  .reader-mode-shell.reader-dark .reader-settings-label,
+  .reader-mode-shell.reader-dark .reader-settings-close {
+    color: rgba(235, 241, 243, 0.68);
+  }
+
+  .reader-mode-shell.reader-dark .reader-settings-title {
+    color: rgba(245, 248, 249, 0.94);
+  }
+
+  .reader-mode-shell.reader-dark .reader-settings-font-row {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
 }
