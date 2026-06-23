@@ -744,6 +744,10 @@ button {
   backdrop-filter: none;
 }
 
+.reader-legacy-mobile .reader-card-stage {
+  animation: none;
+}
+
 .reader-mode-shell.reader-dark .reader-mode-progress {
   background: rgba(255, 255, 255, 0.12);
 }

@@ -68,7 +68,7 @@ export default function ZikirCard({
         }
         action();
       },
-      onTouchEnd: (event) => {
+      onTouchStart: (event) => {
         if (!touchMode) {
           return;
         }

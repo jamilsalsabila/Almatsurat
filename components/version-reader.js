@@ -110,7 +110,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
         }
         action();
       },
-      onTouchEnd: (event) => {
+      onTouchStart: (event) => {
         if (!touchMode) {
           return;
         }
