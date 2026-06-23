@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import AlmatsuratPage from "@/components/almatsurat-page";
 import VersionReader from "@/components/version-reader";
 
-export default function VersionScreen({ data, theme }) {
-  const [darkMode, setDarkMode] = useState(false);
+export default function VersionScreen({ data, theme, initialReaderState }) {
+  const [darkMode, setDarkMode] = useState(initialReaderState?.darkMode ?? false);
   const [chromeHidden, setChromeHidden] = useState(false);
 
   useEffect(() => {
@@ -13,10 +13,14 @@ export default function VersionScreen({ data, theme }) {
       return;
     }
 
+    if (initialReaderState?.hasQueryState) {
+      return;
+    }
+
     if (window.localStorage.getItem(`${data.slug}-dark-mode`) === "true") {
       setDarkMode(true);
     }
-  }, [data.slug]);
+  }, [data.slug, initialReaderState?.hasQueryState]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -33,6 +37,7 @@ export default function VersionScreen({ data, theme }) {
         onChromeHiddenChange={setChromeHidden}
         onDarkModeChange={setDarkMode}
         data={data}
+        initialReaderState={initialReaderState}
         theme={theme}
       />
     </AlmatsuratPage>

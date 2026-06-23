@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import ZikirCard from "@/components/zikir-card";
 import { applyTimeMode } from "@/lib/time-mode";
@@ -8,10 +9,10 @@ const MIN_FONT_PT = 1;
 const MAX_FONT_PT = 72;
 const DEFAULT_FONT_PT = 12;
 
-export default function VersionReader({ data, darkMode = false, onChromeHiddenChange = () => {}, onDarkModeChange = () => {}, theme }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [fontSizePt, setFontSizePt] = useState(DEFAULT_FONT_PT);
-  const [timeMode, setTimeMode] = useState("pagi");
+export default function VersionReader({ data, darkMode = false, initialReaderState, onChromeHiddenChange = () => {}, onDarkModeChange = () => {}, theme }) {
+  const [activeIndex, setActiveIndex] = useState(initialReaderState?.activeIndex ?? 0);
+  const [fontSizePt, setFontSizePt] = useState(initialReaderState?.fontSizePt ?? DEFAULT_FONT_PT);
+  const [timeMode, setTimeMode] = useState(initialReaderState?.timeMode ?? "pagi");
   const [navDirection, setNavDirection] = useState("next");
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
   const [disableTouchSwipe, setDisableTouchSwipe] = useState(false);
@@ -28,6 +29,10 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
     const savedFontSizeMode = window.localStorage.getItem(`${data.slug}-font-size-mode`);
     const savedTimeMode = window.localStorage.getItem(`${data.slug}-time-mode`);
 
+    if (initialReaderState?.hasQueryState) {
+      return;
+    }
+
     if (savedIndex) {
       const parsed = Number(savedIndex);
       if (Number.isFinite(parsed) && parsed >= 0 && parsed < data.cards.length) {
@@ -43,8 +48,7 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
     if (savedTimeMode === "pagi" || savedTimeMode === "petang") {
       setTimeMode(savedTimeMode);
     }
-
-  }, [data.cards.length, data.slug]);
+  }, [data.cards.length, data.slug, initialReaderState?.hasQueryState]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -152,12 +156,37 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
     setFontSizePt((current) => Math.min(MAX_FONT_PT, current + 1));
   }
 
+  function buildReaderHref(overrides = {}) {
+    const params = new URLSearchParams();
+    const nextIndex = overrides.activeIndex ?? activeIndex;
+    const nextFont = overrides.fontSizePt ?? fontSizePt;
+    const nextTimeMode = overrides.timeMode ?? timeMode;
+    const nextDarkMode = overrides.darkMode ?? darkMode;
+    const nextCount = overrides.currentCount ?? initialReaderState?.currentCount ?? 0;
+
+    params.set("i", String(nextIndex));
+    params.set("font", String(nextFont));
+    params.set("mode", nextTimeMode);
+    params.set("theme", nextDarkMode ? "dark" : "light");
+    params.set("count", String(nextCount));
+
+    return `/${data.slug}?${params.toString()}`;
+  }
+
   const activeCard = data.cards[activeIndex];
   const progressPercent = ((activeIndex + 1) / data.cards.length) * 100;
   const currentPreview = applyTimeMode(activeCard.entries[0]?.text ?? "", timeMode);
   const morningPreview = applyTimeMode(activeCard.entries[0]?.text ?? "", "pagi");
   const eveningPreview = applyTimeMode(activeCard.entries[0]?.text ?? "", "petang");
   const hasTimeVariant = morningPreview !== eveningPreview;
+  const previousHref = buildReaderHref({ activeIndex: (activeIndex - 1 + data.cards.length) % data.cards.length, currentCount: 0 });
+  const nextHref = buildReaderHref({ activeIndex: (activeIndex + 1) % data.cards.length, currentCount: 0 });
+  const darkToggleHref = buildReaderHref({ darkMode: !darkMode });
+  const morningHref = buildReaderHref({ timeMode: "pagi" });
+  const eveningHref = buildReaderHref({ timeMode: "petang" });
+  const smallerFontHref = buildReaderHref({ fontSizePt: Math.max(MIN_FONT_PT, fontSizePt - 1) });
+  const largerFontHref = buildReaderHref({ fontSizePt: Math.min(MAX_FONT_PT, fontSizePt + 1) });
+  const resetHref = buildReaderHref({ currentCount: 0 });
 
   return (
     <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}${legacyIosSafariMode ? " reader-legacy-mobile" : ""}`}>
@@ -181,48 +210,85 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
 
           <div className="reader-mode-actions">
             <div className="reader-segment">
-              <button
-                className={`reader-segment-button${darkMode ? " active" : ""}`}
-                {...bindTouchPress(() => onDarkModeChange(!darkMode))}
-                style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
-                type="button"
-              >
-                {darkMode ? "Dark On" : "Dark Off"}
-              </button>
+              {legacyIosSafariMode ? (
+                <Link className={`reader-segment-button${darkMode ? " active" : ""}`} href={darkToggleHref} style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}>
+                  {darkMode ? "Dark On" : "Dark Off"}
+                </Link>
+              ) : (
+                <button
+                  className={`reader-segment-button${darkMode ? " active" : ""}`}
+                  {...bindTouchPress(() => onDarkModeChange(!darkMode))}
+                  style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
+                  type="button"
+                >
+                  {darkMode ? "Dark On" : "Dark Off"}
+                </button>
+              )}
             </div>
 
             <div className="reader-segment">
-              <button
-                className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
-                {...bindTouchPress(() => setTimeMode("pagi"))}
-                style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                type="button"
-              >
-                Pagi
-              </button>
-              <button
-                className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
-                {...bindTouchPress(() => setTimeMode("petang"))}
-                style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                type="button"
-              >
-                Petang
-              </button>
+              {legacyIosSafariMode ? (
+                <>
+                  <Link className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`} href={morningHref} style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
+                    Pagi
+                  </Link>
+                  <Link className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`} href={eveningHref} style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
+                    Petang
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button
+                    className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
+                    {...bindTouchPress(() => setTimeMode("pagi"))}
+                    style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
+                    type="button"
+                  >
+                    Pagi
+                  </button>
+                  <button
+                    className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
+                    {...bindTouchPress(() => setTimeMode("petang"))}
+                    style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
+                    type="button"
+                  >
+                    Petang
+                  </button>
+                </>
+              )}
             </div>
 
             <div className="reader-segment">
-              <button className="reader-segment-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
-                Perkecil
-              </button>
+              {legacyIosSafariMode ? (
+                <Link className="reader-segment-button" href={smallerFontHref}>
+                  Perkecil
+                </Link>
+              ) : (
+                <button className="reader-segment-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
+                  Perkecil
+                </button>
+              )}
               <span className="reader-font-indicator">{fontSizePt}pt</span>
-              <button className="reader-segment-button" disabled={fontSizePt >= MAX_FONT_PT} {...bindTouchPress(increaseFont)} type="button">
-                Perbesar
-              </button>
+              {legacyIosSafariMode ? (
+                <Link className="reader-segment-button" href={largerFontHref}>
+                  Perbesar
+                </Link>
+              ) : (
+                <button className="reader-segment-button" disabled={fontSizePt >= MAX_FONT_PT} {...bindTouchPress(increaseFont)} type="button">
+                  Perbesar
+                </button>
+              )}
             </div>
 
-            <button className="reader-reset" {...bindTouchPress(handleResetAll)} type="button">
-              Reset semua hitungan
-            </button>
+            {legacyIosSafariMode ? (
+              <Link className="reader-reset" href={resetHref}>
+                Reset semua hitungan
+              </Link>
+            ) : (
+              <button className="reader-reset" {...bindTouchPress(handleResetAll)} type="button">
+                Reset semua hitungan
+              </button>
+            )}
           </div>
         </div>
 
@@ -329,9 +395,12 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
           >
             <ZikirCard
               card={activeCard}
+              currentCount={initialReaderState?.currentCount ?? 0}
               darkMode={darkMode}
               fontSizePt={fontSizePt}
               index={activeIndex}
+              legacyHrefBuilder={legacyIosSafariMode ? buildReaderHref : null}
+              legacyMode={legacyIosSafariMode}
               readerMode
               storageKey={`${data.slug}-count-${activeIndex}`}
               touchMode={touchMode}
@@ -342,12 +411,25 @@ export default function VersionReader({ data, darkMode = false, onChromeHiddenCh
         </div>
 
         <div className="reader-bottom-nav">
-          <button className="reader-mode-nav-button" {...bindTouchPress(showPrevious)} type="button">
-            Sebelumnya
-          </button>
-          <button className="reader-mode-nav-button" {...bindTouchPress(showNext)} type="button">
-            Berikutnya
-          </button>
+          {legacyIosSafariMode ? (
+            <>
+              <Link className="reader-mode-nav-button" href={previousHref}>
+                Sebelumnya
+              </Link>
+              <Link className="reader-mode-nav-button" href={nextHref}>
+                Berikutnya
+              </Link>
+            </>
+          ) : (
+            <>
+              <button className="reader-mode-nav-button" {...bindTouchPress(showPrevious)} type="button">
+                Sebelumnya
+              </button>
+              <button className="reader-mode-nav-button" {...bindTouchPress(showNext)} type="button">
+                Berikutnya
+              </button>
+            </>
+          )}
         </div>
       </section>
   );

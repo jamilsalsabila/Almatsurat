@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { applyTimeMode } from "@/lib/time-mode";
 
@@ -14,17 +15,20 @@ function toArabicNumber(value) {
 
 export default function ZikirCard({
   card,
+  currentCount = 0,
   darkMode = false,
   theme,
   fontSizePt = 12,
   index,
+  legacyHrefBuilder = null,
+  legacyMode = false,
   onFocus,
   storageKey,
   readerMode = false,
   touchMode = false,
   timeMode = "pagi",
 }) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(currentCount);
   const progress = Math.min((count / card.count) * 100, 100);
   const complete = count >= card.count;
   const [isPressing, setIsPressing] = useState(false);
@@ -46,7 +50,7 @@ export default function ZikirCard({
     if (Number.isFinite(parsed) && parsed >= 0) {
       setCount(Math.min(parsed, card.count));
     }
-  }, [card.count, storageKey]);
+  }, [card.count, currentCount, legacyMode, storageKey]);
 
   useEffect(() => {
     if (!storageKey || typeof window === "undefined") {
@@ -95,6 +99,8 @@ export default function ZikirCard({
   const contextColor = darkMode ? "rgba(235, 241, 243, 0.76)" : `${theme.accent}bb`;
   const counterLabelColor = darkMode ? "rgba(235, 241, 243, 0.86)" : theme.accent;
   const counterValueColor = darkMode ? "#f2f5f6" : theme.accent;
+  const nextLegacyCount = count >= card.count ? 0 : count + 1;
+  const legacyCountHref = legacyHrefBuilder ? legacyHrefBuilder({ currentCount: nextLegacyCount }) : "#";
 
   return (
     <article
@@ -153,39 +159,67 @@ export default function ZikirCard({
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${progress}%`, backgroundColor: theme.accentStrong }} />
         </div>
-        <button
-          className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`}
-          type="button"
-          {...bindTouchPress(handleTap)}
-          onPointerDown={() => setIsPressing(true)}
-          onPointerUp={() => setIsPressing(false)}
-          onPointerLeave={() => setIsPressing(false)}
-          onPointerCancel={() => setIsPressing(false)}
-        >
-          <div className="counter-copy">
-            <span className="counter-label" style={{ color: counterLabelColor }}>
-              Hitungan bacaan
-            </span>
-            <div className="counter-inline">
-              <span className="counter-value" style={{ color: counterValueColor }}>
-                {count} / {card.count}
+        {legacyMode ? (
+          <Link className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref}>
+            <div className="counter-copy">
+              <span className="counter-label" style={{ color: counterLabelColor }}>
+                Hitungan bacaan
               </span>
-              <span className="counter-hint">
-                {complete ? "Ketuk untuk mengulang dari awal." : "Ketuk untuk menambah hitungan."}
-              </span>
+              <div className="counter-inline">
+                <span className="counter-value" style={{ color: counterValueColor }}>
+                  {count} / {card.count}
+                </span>
+                <span className="counter-hint">
+                  {complete ? "Ketuk untuk mengulang dari awal." : "Ketuk untuk menambah hitungan."}
+                </span>
+              </div>
             </div>
-          </div>
-          <span
-            className="counter-done mushaf-counter-button"
-            style={{
-              backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
-              color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
-              borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
-            }}
+            <span
+              className="counter-done mushaf-counter-button"
+              style={{
+                backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
+                color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
+                borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
+              }}
+            >
+              {complete ? "Ulangi" : "Tap"}
+            </span>
+          </Link>
+        ) : (
+          <button
+            className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`}
+            type="button"
+            {...bindTouchPress(handleTap)}
+            onPointerDown={() => setIsPressing(true)}
+            onPointerUp={() => setIsPressing(false)}
+            onPointerLeave={() => setIsPressing(false)}
+            onPointerCancel={() => setIsPressing(false)}
           >
-            {complete ? "Ulangi" : "Tap"}
-          </span>
-        </button>
+            <div className="counter-copy">
+              <span className="counter-label" style={{ color: counterLabelColor }}>
+                Hitungan bacaan
+              </span>
+              <div className="counter-inline">
+                <span className="counter-value" style={{ color: counterValueColor }}>
+                  {count} / {card.count}
+                </span>
+                <span className="counter-hint">
+                  {complete ? "Ketuk untuk mengulang dari awal." : "Ketuk untuk menambah hitungan."}
+                </span>
+              </div>
+            </div>
+            <span
+              className="counter-done mushaf-counter-button"
+              style={{
+                backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
+                color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
+                borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
+              }}
+            >
+              {complete ? "Ulangi" : "Tap"}
+            </span>
+          </button>
+        )}
       </div>
 
       {!readerMode ? (
