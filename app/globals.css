@@ -73,7 +73,7 @@ button {
   background-repeat: no-repeat, no-repeat;
   transform: scale(1.02);
   transition: opacity 820ms ease, transform 1200ms ease;
-  z-index: -1;
+  z-index: 0;
 }
 
 .scenic-shell-layer-current {
@@ -101,7 +101,7 @@ button {
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(243, 246, 248, 0.3));
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
 
 .page-dark.scenic-shell::before {
@@ -134,9 +134,9 @@ button {
   }
 }
 
-.site-shell > * {
+.site-shell > :not(.scenic-shell-layer) {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .site-container {
@@ -530,7 +530,7 @@ button {
 .reader-mode-toolbar {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: center;
   gap: 18px;
   flex-wrap: wrap;
   position: sticky;
@@ -543,12 +543,12 @@ button {
 }
 
 .reader-mode-status {
-  display: grid;
+  display: none;
   gap: 8px;
 }
 
 .reader-mobile-settings-trigger {
-  display: none;
+  display: block;
   border: 1px solid rgba(17, 17, 17, 0.08);
   background: rgba(255, 255, 255, 0.68);
   color: rgba(17, 17, 17, 0.72);
@@ -559,6 +559,7 @@ button {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   text-align: left;
+  min-width: min(360px, 100%);
 }
 
 .reader-mobile-settings-kicker {
@@ -628,7 +629,7 @@ button {
 }
 
 .reader-mode-actions {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
@@ -809,7 +810,109 @@ button {
 }
 
 .reader-settings-sheet {
-  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: block;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.reader-settings-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border: 0;
+  background: rgba(14, 19, 21, 0.42);
+  pointer-events: auto;
+}
+
+.reader-settings-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  width: min(520px, calc(100vw - 32px));
+  gap: 16px;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(247, 249, 250, 0.98);
+  box-shadow: 0 24px 60px rgba(14, 19, 21, 0.2);
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+.reader-settings-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reader-settings-kicker {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.42);
+}
+
+.reader-settings-title {
+  margin: 0;
+  font-size: 20px;
+  color: rgba(17, 17, 17, 0.82);
+}
+
+.reader-settings-close {
+  border: 0;
+  background: transparent;
+  color: rgba(17, 17, 17, 0.62);
+  min-height: 42px;
+  padding: 8px 0 8px 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reader-settings-group {
+  display: grid;
+  gap: 8px;
+}
+
+.reader-settings-label {
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.56);
+}
+
+.reader-settings-segment {
+  width: 100%;
+}
+
+.reader-settings-font-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+.reader-settings-font-button {
+  min-width: 0;
+  min-height: 46px;
+}
+
+.reader-settings-font-indicator {
+  min-width: 54px;
+}
+
+.reader-settings-reset {
+  width: 100%;
+  justify-self: stretch;
 }
 
 .reader-mode-shell.reader-dark .reader-mode-status,
@@ -920,6 +1023,26 @@ button {
 
 .reader-mode-shell.reader-dark .reader-mode-nav-button {
   color: rgba(245, 248, 249, 0.92);
+}
+
+.reader-mode-shell.reader-dark .reader-settings-panel {
+  background: rgba(16, 21, 24, 0.98);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+}
+
+.reader-mode-shell.reader-dark .reader-settings-kicker,
+.reader-mode-shell.reader-dark .reader-settings-label,
+.reader-mode-shell.reader-dark .reader-settings-close {
+  color: rgba(235, 241, 243, 0.68);
+}
+
+.reader-mode-shell.reader-dark .reader-settings-title {
+  color: rgba(245, 248, 249, 0.94);
+}
+
+.reader-mode-shell.reader-dark .reader-settings-font-row {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .mushaf-card.reader-dark-card::before {
