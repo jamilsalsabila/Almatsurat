@@ -1862,3 +1862,21 @@ button {
   }
 
 }
+
+/* Keep the settings dialog centered on mobile instead of falling back to a bottom sheet. */
+.reader-settings-panel {
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: min(520px, calc(100vw - 32px)) !important;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  transform: translate(-50%, -50%) !important;
+}
+
+@media (max-width: 860px) {
+  .reader-settings-panel {
+    padding: 24px 22px calc(24px + env(safe-area-inset-bottom)) !important;
+  }
+}
