@@ -65,6 +65,34 @@ button {
   position: relative;
 }
 
+.scenic-shell-layer {
+  position: fixed;
+  inset: 0;
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  transform: scale(1.02);
+  transition: opacity 820ms ease, transform 1200ms ease;
+  z-index: -1;
+}
+
+.scenic-shell-layer-current {
+  opacity: 1;
+}
+
+.scenic-shell-layer-current.scene-entering {
+  animation: scenicFadeIn 820ms ease both;
+}
+
+.scenic-shell-layer-previous {
+  opacity: 0;
+}
+
+.scenic-shell-layer-previous.scene-exiting {
+  opacity: 1;
+  animation: scenicFadeOut 820ms ease both;
+}
+
 .scenic-shell::before {
   content: "";
   position: fixed;
@@ -80,6 +108,30 @@ button {
   background:
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 30%),
     linear-gradient(180deg, rgba(8, 13, 16, 0.22), rgba(8, 13, 16, 0.44));
+}
+
+@keyframes scenicFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes scenicFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
 }
 
 .site-shell > * {
@@ -506,6 +558,35 @@ button {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  text-align: left;
+}
+
+.reader-mobile-settings-kicker {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.68;
+}
+
+.reader-mobile-settings-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
+  font-size: 15px;
+  color: rgba(17, 17, 17, 0.84);
+}
+
+.reader-mobile-settings-dot {
+  opacity: 0.44;
+}
+
+.reader-mobile-settings-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.54);
 }
 
 .reader-mode-kicker {
@@ -749,6 +830,14 @@ button {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.08);
   color: rgba(245, 248, 249, 0.9);
+}
+
+.reader-mode-shell.reader-dark .reader-mobile-settings-summary {
+  color: rgba(245, 248, 249, 0.92);
+}
+
+.reader-mode-shell.reader-dark .reader-mobile-settings-hint {
+  color: rgba(235, 241, 243, 0.64);
 }
 
 .reader-legacy-mobile {
@@ -1295,7 +1384,7 @@ button {
   }
 
   .reader-mode-status {
-    min-width: 0;
+    display: none;
   }
 
   .reader-mode-meta {
@@ -1304,9 +1393,8 @@ button {
   }
 
   .reader-mobile-settings-trigger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    width: 100%;
     flex-shrink: 0;
   }
 

@@ -209,7 +209,15 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
           </div>
 
           <button className="reader-mobile-settings-trigger" {...bindTouchPress(() => setMobileSettingsOpen(true))} type="button">
-            Pengaturan
+            <span className="reader-mobile-settings-kicker">Mode Fokus</span>
+            <span className="reader-mobile-settings-summary">
+              {activeIndex + 1} / {data.cards.length}
+              <span className="reader-mobile-settings-dot" aria-hidden="true">
+                •
+              </span>
+              {activeCard.titleArabic}
+            </span>
+            <span className="reader-mobile-settings-hint">Buka pengaturan</span>
           </button>
 
           <div className="reader-mode-actions">

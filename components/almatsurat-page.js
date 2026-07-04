@@ -1,25 +1,44 @@
 import Link from "next/link";
 import { getVersionList } from "@/lib/almatsurat";
 
-export default function AlmatsuratPage({ backgroundMode = "pagi", backgroundScene = "", children, chromeHidden = false, data, theme, darkMode = false }) {
+export default function AlmatsuratPage({
+  backgroundMode = "pagi",
+  backgroundScene = "",
+  children,
+  chromeHidden = false,
+  data,
+  darkMode = false,
+  isSceneTransitioning = false,
+  previousBackgroundScene = "",
+  theme,
+}) {
   const versions = getVersionList();
-  const scenicBackground = backgroundScene
+  const baseBackgroundStyle = {
+    backgroundColor: darkMode ? "#0f1518" : "#eef4f2",
+    color: darkMode ? theme.darkText : theme.text,
+  };
+  const activeSceneStyle = backgroundScene
     ? {
-        backgroundColor: darkMode ? "#0f1518" : "#eef4f2",
         backgroundImage: `${darkMode ? "linear-gradient(180deg, rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(180deg, rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${backgroundScene})`,
-        backgroundSize: "cover, cover",
-        backgroundPosition: "center, center",
-        backgroundRepeat: "no-repeat, no-repeat",
       }
     : {
-        background: darkMode ? theme.darkBackground : theme.background,
+        backgroundImage: darkMode ? theme.darkBackground : theme.background,
       };
+  const previousSceneStyle = previousBackgroundScene
+    ? {
+        backgroundImage: `${darkMode ? "linear-gradient(180deg, rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(180deg, rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${previousBackgroundScene})`,
+      }
+    : null;
 
   return (
     <main
       className={`site-shell scenic-shell scenic-${backgroundMode}${darkMode ? " page-dark" : ""}`}
-      style={{ ...scenicBackground, color: darkMode ? theme.darkText : theme.text }}
+      style={baseBackgroundStyle}
     >
+      <div className={`scenic-shell-layer scenic-shell-layer-current${isSceneTransitioning ? " scene-entering" : ""}`} style={activeSceneStyle} />
+      {previousSceneStyle ? (
+        <div className={`scenic-shell-layer scenic-shell-layer-previous${isSceneTransitioning ? " scene-exiting" : ""}`} style={previousSceneStyle} />
+      ) : null}
       <div className="site-container version-page">
         <div className={`topbar mushaf-topbar${chromeHidden ? " chrome-hidden" : ""}`}>
           <Link className="brand-link" href="/">

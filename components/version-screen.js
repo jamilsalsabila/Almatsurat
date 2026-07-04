@@ -10,6 +10,8 @@ export default function VersionScreen({ data, theme, initialReaderState }) {
   const [chromeHidden, setChromeHidden] = useState(false);
   const [backgroundMode, setBackgroundMode] = useState(initialReaderState?.timeMode ?? "pagi");
   const [backgroundScene, setBackgroundScene] = useState(() => pickRandomScene(initialReaderState?.timeMode ?? "pagi"));
+  const [previousBackgroundScene, setPreviousBackgroundScene] = useState("");
+  const [isSceneTransitioning, setIsSceneTransitioning] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -34,11 +36,40 @@ export default function VersionScreen({ data, theme, initialReaderState }) {
   }, [darkMode, data.slug]);
 
   useEffect(() => {
-    setBackgroundScene((current) => pickRandomScene(backgroundMode, current));
+    setBackgroundScene((current) => {
+      const nextScene = pickRandomScene(backgroundMode, current);
+      if (nextScene !== current) {
+        setPreviousBackgroundScene(current);
+        setIsSceneTransitioning(true);
+      }
+      return nextScene;
+    });
   }, [backgroundMode]);
 
+  useEffect(() => {
+    if (!isSceneTransitioning) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsSceneTransitioning(false);
+      setPreviousBackgroundScene("");
+    }, 900);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isSceneTransitioning]);
+
   return (
-    <AlmatsuratPage backgroundMode={backgroundMode} backgroundScene={backgroundScene} chromeHidden={chromeHidden} data={data} darkMode={darkMode} theme={theme}>
+    <AlmatsuratPage
+      backgroundMode={backgroundMode}
+      backgroundScene={backgroundScene}
+      chromeHidden={chromeHidden}
+      data={data}
+      darkMode={darkMode}
+      isSceneTransitioning={isSceneTransitioning}
+      previousBackgroundScene={previousBackgroundScene}
+      theme={theme}
+    >
       <VersionReader
         darkMode={darkMode}
         onChromeHiddenChange={setChromeHidden}
