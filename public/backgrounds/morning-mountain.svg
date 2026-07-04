@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Morning mountain scene</title>
+  <desc id="desc">A calm sunrise over layered mountains and a quiet valley.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#9dd8ff"/>
+      <stop offset="45%" stop-color="#d8efff"/>
+      <stop offset="100%" stop-color="#f4f7ef"/>
+    </linearGradient>
+    <linearGradient id="sunrise" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffe6a6" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffd8c5" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ridgeBack" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#92b4bc"/>
+      <stop offset="100%" stop-color="#6d8f89"/>
+    </linearGradient>
+    <linearGradient id="ridgeFront" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#4f7a69"/>
+      <stop offset="100%" stop-color="#355547"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1260" cy="160" r="96" fill="#fff3bf"/>
+  <ellipse cx="1180" cy="210" rx="400" ry="180" fill="url(#sunrise)"/>
+  <g fill="#ffffff" opacity="0.72">
+    <ellipse cx="250" cy="180" rx="118" ry="40"/>
+    <ellipse cx="340" cy="190" rx="86" ry="28"/>
+    <ellipse cx="980" cy="130" rx="132" ry="44"/>
+    <ellipse cx="1080" cy="142" rx="98" ry="32"/>
+  </g>
+  <path d="M0 470C148 380 246 414 365 360c118-54 171-149 298-138 128 11 147 103 281 130 135 28 199-56 325-30 127 25 190 117 331 86V900H0Z" fill="url(#ridgeBack)"/>
+  <path d="M0 570c113-88 235-64 352-112 118-48 140-150 270-152 131-2 184 120 304 148 120 28 189-40 296-28 106 12 194 94 378 74V900H0Z" fill="#7ba08f" opacity="0.78"/>
+  <path d="M0 650c130-40 207-122 343-116 135 5 201 90 320 74 120-16 168-98 278-104 109-6 169 58 273 65 105 7 183-32 386 6V900H0Z" fill="url(#ridgeFront)"/>
+  <path d="M0 730c176-28 313-9 514-44 202-36 255-94 422-88 167 7 308 83 664 32V900H0Z" fill="#294239" opacity="0.78"/>
+  <path d="M640 598c88 22 134 62 185 108 51 45 130 80 268 92-63 43-202 80-412 80-212 0-357-34-452-74 154-11 275-69 411-206Z" fill="#f7f3e3" opacity="0.18"/>
+</svg>

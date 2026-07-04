@@ -9,7 +9,7 @@ const MIN_FONT_PT = 1;
 const MAX_FONT_PT = 72;
 const DEFAULT_FONT_PT = 12;
 
-export default function VersionReader({ data, darkMode = false, initialReaderState, onChromeHiddenChange = () => {}, onDarkModeChange = () => {}, theme }) {
+export default function VersionReader({ data, darkMode = false, initialReaderState, onChromeHiddenChange = () => {}, onDarkModeChange = () => {}, onTimeModeChange = () => {}, theme }) {
   const [activeIndex, setActiveIndex] = useState(initialReaderState?.activeIndex ?? 0);
   const [fontSizePt, setFontSizePt] = useState(initialReaderState?.fontSizePt ?? DEFAULT_FONT_PT);
   const [timeMode, setTimeMode] = useState(initialReaderState?.timeMode ?? "pagi");
@@ -70,6 +70,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     }
     window.localStorage.setItem(`${data.slug}-time-mode`, timeMode);
   }, [data.slug, timeMode]);
+
+  useEffect(() => {
+    onTimeModeChange(timeMode);
+  }, [onTimeModeChange, timeMode]);
 
   useEffect(() => {
     onChromeHiddenChange(false);

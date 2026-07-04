@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Evening hills scene</title>
+  <desc id="desc">A dusky evening over blue hills with warm twilight fading into night.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#163159"/>
+      <stop offset="42%" stop-color="#4d4e8e"/>
+      <stop offset="72%" stop-color="#e38b6d"/>
+      <stop offset="100%" stop-color="#f2c08d"/>
+    </linearGradient>
+    <linearGradient id="back" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#53648f"/>
+      <stop offset="100%" stop-color="#304466"/>
+    </linearGradient>
+    <linearGradient id="front" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#263d52"/>
+      <stop offset="100%" stop-color="#172632"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1240" cy="196" r="54" fill="#ffe4b4" opacity="0.8"/>
+  <g fill="#fff7eb" opacity="0.92">
+    <circle cx="300" cy="110" r="2.2"/>
+    <circle cx="412" cy="144" r="2.2"/>
+    <circle cx="558" cy="92" r="1.7"/>
+    <circle cx="920" cy="134" r="1.9"/>
+    <circle cx="1094" cy="84" r="2.2"/>
+    <circle cx="1418" cy="142" r="2"/>
+  </g>
+  <path d="M0 460c145-97 274-126 391-98 118 29 183 94 303 97 120 4 185-72 307-75 121-3 202 49 313 70 110 21 158 4 286-24V900H0Z" fill="url(#back)"/>
+  <path d="M0 575c157-55 241-101 379-100 138 1 183 72 328 81 144 9 190-55 309-57 118-2 176 46 284 59 109 12 182-6 300-43V900H0Z" fill="#35516e" opacity="0.82"/>
+  <path d="M0 664c171-21 262-75 407-85 144-11 231 44 370 50 139 7 191-35 327-43 135-8 221 55 496 33V900H0Z" fill="url(#front)"/>
+</svg>

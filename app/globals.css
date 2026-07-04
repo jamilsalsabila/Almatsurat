@@ -61,6 +61,32 @@ button {
   min-height: 100vh;
 }
 
+.scenic-shell {
+  position: relative;
+}
+
+.scenic-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(243, 246, 248, 0.3));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-dark.scenic-shell::before {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(8, 13, 16, 0.22), rgba(8, 13, 16, 0.44));
+}
+
+.site-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
 .site-container {
   width: min(980px, calc(100% - 32px));
   margin: 0 auto;

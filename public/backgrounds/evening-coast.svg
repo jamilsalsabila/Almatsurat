@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Evening coast scene</title>
+  <desc id="desc">A warm sunset over the shoreline with gentle evening waves.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#1b2f59"/>
+      <stop offset="38%" stop-color="#5e477d"/>
+      <stop offset="72%" stop-color="#f08c63"/>
+      <stop offset="100%" stop-color="#ffd2a0"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#3d6684"/>
+      <stop offset="100%" stop-color="#132d45"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1180" cy="270" r="78" fill="#ffd9a6" opacity="0.9"/>
+  <rect y="380" width="1600" height="520" fill="url(#sea)"/>
+  <path d="M0 422c157 26 231 28 346 9s196-18 318 6c122 23 204 24 334 0 129-24 228-25 361 3 134 29 241 34 241 34v58H0Z" fill="#f9d5b1" opacity="0.16"/>
+  <path d="M0 508c143 18 230 18 365 0 134-19 208-19 335 0s208 19 345 0c136-19 232-19 359 0s196 19 196 19v56H0Z" fill="#f5ebf3" opacity="0.14"/>
+  <path d="M0 706c91-19 192-74 313-94 120-20 255-6 364 29 110 35 193 74 339 79 145 6 281-62 584-42v222H0Z" fill="#e8be8d"/>
+  <path d="M0 762c130-42 240-39 339-10 99 29 154 72 300 91 147 20 254-27 399-19 145 8 245 52 562 25v71H0Z" fill="#b37d64" opacity="0.45"/>
+  <path d="M1346 352c33-71 89-117 154-130 37-7 65-3 100 8v164c-58-17-121-24-178-20-56 4-87 0-76-22Z" fill="#514468" opacity="0.72"/>
+</svg>

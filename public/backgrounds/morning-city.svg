@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Morning city scene</title>
+  <desc id="desc">A quiet city skyline at sunrise with soft clouds and warm light.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#9ed7ff"/>
+      <stop offset="58%" stop-color="#ddefff"/>
+      <stop offset="100%" stop-color="#fff0dc"/>
+    </linearGradient>
+    <linearGradient id="sunwash" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fff1b5" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#fff1b5" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1260" cy="162" r="82" fill="#fff0af"/>
+  <ellipse cx="1180" cy="216" rx="420" ry="170" fill="url(#sunwash)"/>
+  <g fill="#ffffff" opacity="0.7">
+    <ellipse cx="300" cy="150" rx="120" ry="38"/>
+    <ellipse cx="390" cy="166" rx="88" ry="28"/>
+    <ellipse cx="970" cy="118" rx="132" ry="40"/>
+    <ellipse cx="1080" cy="136" rx="88" ry="26"/>
+  </g>
+  <rect y="650" width="1600" height="250" fill="#f0dbc1"/>
+  <g fill="#738997">
+    <rect x="88" y="368" width="114" height="282" rx="6"/>
+    <rect x="224" y="304" width="148" height="346" rx="6"/>
+    <rect x="398" y="404" width="88" height="246" rx="6"/>
+    <rect x="520" y="252" width="164" height="398" rx="6"/>
+    <rect x="718" y="332" width="126" height="318" rx="6"/>
+    <rect x="874" y="278" width="98" height="372" rx="6"/>
+    <rect x="994" y="360" width="138" height="290" rx="6"/>
+    <rect x="1162" y="214" width="176" height="436" rx="6"/>
+    <rect x="1368" y="392" width="122" height="258" rx="6"/>
+  </g>
+  <g fill="#8ea6b4">
+    <rect x="111" y="400" width="24" height="24"/>
+    <rect x="147" y="400" width="24" height="24"/>
+    <rect x="252" y="336" width="28" height="28"/>
+    <rect x="291" y="336" width="28" height="28"/>
+    <rect x="560" y="290" width="32" height="32"/>
+    <rect x="607" y="290" width="32" height="32"/>
+    <rect x="756" y="370" width="26" height="26"/>
+    <rect x="910" y="316" width="20" height="20"/>
+    <rect x="1230" y="256" width="34" height="34"/>
+    <rect x="1280" y="256" width="34" height="34"/>
+  </g>
+  <path d="M0 700c98-10 176-22 300-18 123 3 181 28 312 26 131-2 183-28 302-30 120-1 228 14 351 28 123 14 180 12 335-6v200H0Z" fill="#d7be97"/>
+</svg>

@@ -1,13 +1,24 @@
 import Link from "next/link";
 import { getVersionList } from "@/lib/almatsurat";
 
-export default function AlmatsuratPage({ children, chromeHidden = false, data, theme, darkMode = false }) {
+export default function AlmatsuratPage({ backgroundMode = "pagi", backgroundScene = "", children, chromeHidden = false, data, theme, darkMode = false }) {
   const versions = getVersionList();
+  const scenicBackground = backgroundScene
+    ? {
+        backgroundColor: darkMode ? "#0f1518" : "#eef4f2",
+        backgroundImage: `${darkMode ? "linear-gradient(180deg, rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(180deg, rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${backgroundScene})`,
+        backgroundSize: "cover, cover",
+        backgroundPosition: "center, center",
+        backgroundRepeat: "no-repeat, no-repeat",
+      }
+    : {
+        background: darkMode ? theme.darkBackground : theme.background,
+      };
 
   return (
     <main
-      className={`site-shell${darkMode ? " page-dark" : ""}`}
-      style={{ background: darkMode ? theme.darkBackground : theme.background, color: darkMode ? theme.darkText : theme.text }}
+      className={`site-shell scenic-shell scenic-${backgroundMode}${darkMode ? " page-dark" : ""}`}
+      style={{ ...scenicBackground, color: darkMode ? theme.darkText : theme.text }}
     >
       <div className="site-container version-page">
         <div className={`topbar mushaf-topbar${chromeHidden ? " chrome-hidden" : ""}`}>
