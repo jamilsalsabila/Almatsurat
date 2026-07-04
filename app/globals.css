@@ -6,6 +6,113 @@
   --border-soft: rgba(21, 33, 36, 0.085);
 }
 
+/* Final reader surface rules: square, spacious, and photo-first. */
+.reader-settings-backdrop {
+  background: transparent !important;
+}
+
+.reader-settings-panel,
+.reader-mobile-settings-trigger,
+.reader-mode-toolbar,
+.reader-mode-frame,
+.reader-bottom-nav,
+.reader-mode-nav-button,
+.reader-reset,
+.reader-segment,
+.reader-segment-button,
+.reader-settings-font-row,
+.intro-card,
+.landing-card,
+.mushaf-home-note,
+.mushaf-home-card,
+.mushaf-version-switcher,
+.version-link,
+.brand-mark,
+.mushaf-brand-mark,
+.mushaf-sequence,
+.mushaf-repeat,
+.ayat-number,
+.counter-done,
+.mushaf-counter-button,
+.mushaf-card::before,
+.reader-card::before {
+  border-radius: 0 !important;
+}
+
+.reader-mode-toolbar {
+  padding: 14px 20px 12px;
+}
+
+.reader-mode-frame {
+  padding: 24px 28px 26px;
+}
+
+.reader-settings-panel {
+  padding: 28px 32px !important;
+}
+
+.reader-mobile-settings-trigger {
+  padding: 14px 18px;
+}
+
+.reader-card .zikir-card-header {
+  padding: 20px 24px 0;
+}
+
+.reader-card .zikir-card-body {
+  padding: 28px 32px 22px;
+}
+
+.reader-card .counter-area {
+  padding: 0 24px 16px;
+}
+
+.reader-context {
+  padding: 8px 24px 0;
+}
+
+.tap-zone {
+  padding: 22px 12px 18px;
+}
+
+.reader-bottom-nav {
+  padding: 12px;
+}
+
+@media (max-width: 860px) {
+  .reader-mode-toolbar {
+    padding: 12px 12px 10px;
+  }
+
+  .reader-mode-frame {
+    padding: 18px 18px 18px;
+  }
+
+  .reader-settings-panel {
+    padding: 24px 22px calc(22px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .reader-card .zikir-card-header {
+    padding: 18px 20px 0;
+  }
+
+  .reader-card .zikir-card-body {
+    padding: 24px 22px 20px;
+  }
+
+  .reader-card .counter-area {
+    padding: 0 20px 14px;
+  }
+
+  .reader-context {
+    padding: 8px 20px 0;
+  }
+
+  .tap-zone {
+    padding: 20px 12px 18px;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
