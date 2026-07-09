@@ -11,6 +11,10 @@ function clampNumber(value, min, max, fallback) {
   return Math.min(max, Math.max(min, parsed));
 }
 
+function normalizeScript(value) {
+  return ["uthmani", "indopak", "naskh"].includes(value) ? value : "uthmani";
+}
+
 export function generateStaticParams() {
   return getVersionList().map((version) => ({ version: version.slug }));
 }
@@ -38,8 +42,9 @@ export default async function VersionPage({ params, searchParams }) {
     fontSizePt: clampNumber(query?.font, 1, 72, 12),
     timeMode: query?.mode === "petang" ? "petang" : "pagi",
     darkMode: query?.theme === "dark",
+    quranScript: normalizeScript(query?.script),
     currentCount: clampNumber(query?.count, 0, 999, 0),
-    hasQueryState: Boolean(query?.i || query?.font || query?.mode || query?.theme || query?.count),
+    hasQueryState: Boolean(query?.i || query?.font || query?.mode || query?.theme || query?.script || query?.count),
   };
 
   return <VersionScreen data={data} initialReaderState={initialReaderState} theme={theme} />;

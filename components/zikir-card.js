@@ -23,6 +23,7 @@ export default function ZikirCard({
   legacyHrefBuilder = null,
   legacyMode = false,
   onFocus,
+  quranScript = "uthmani",
   storageKey,
   readerMode = false,
   touchMode = false,
@@ -104,7 +105,7 @@ export default function ZikirCard({
 
   return (
     <article
-      className={`zikir-card mushaf-card${readerMode ? " reader-card" : ""}${darkMode ? " reader-dark-card" : ""}`}
+      className={`zikir-card mushaf-card quran-script-${quranScript}${readerMode ? " reader-card" : ""}${darkMode ? " reader-dark-card" : ""}`}
       style={{ borderColor: accentLine, ...dynamicFontVars }}
     >
       <div className="zikir-card-header mushaf-card-header">

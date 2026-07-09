@@ -1,9 +1,22 @@
 :root {
   --font-body: var(--font-naskh), serif;
-  --font-quran: var(--font-uthmani), var(--font-naskh), serif;
+  --font-quran: "QPC Hafs", var(--font-uthmani), var(--font-naskh), serif;
+  --font-quran-indopak: "IndoPak Nastaleeq", var(--font-naskh), serif;
   --shadow-soft: 0 14px 36px rgba(28, 43, 48, 0.05);
   --shadow-card: 0 8px 22px rgba(24, 37, 41, 0.035);
   --border-soft: rgba(21, 33, 36, 0.085);
+}
+
+@font-face {
+  font-family: "QPC Hafs";
+  src: url("https://static-cdn.tarteel.ai/qul/fonts/UthmanicHafs_V22.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IndoPak Nastaleeq";
+  src: url("https://static-cdn.tarteel.ai/qul/fonts/nastaleeq/Hanafi/normal-v4.2.2/with-waqf-lazmi/font.ttf") format("truetype");
+  font-display: swap;
 }
 
 /* Final reader surface rules: square, spacious, and photo-first. */
@@ -327,6 +340,21 @@ button {
 
 .quran-text {
   font-family: var(--font-quran);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "mark" 1, "mkmk" 1;
+  text-rendering: optimizeLegibility;
+}
+
+.quran-script-uthmani .quran-text {
+  font-family: "QPC Hafs", var(--font-uthmani), var(--font-naskh), serif;
+}
+
+.quran-script-indopak .quran-text {
+  font-family: var(--font-quran-indopak);
+  line-height: 2.35;
+}
+
+.quran-script-naskh .quran-text {
+  font-family: var(--font-naskh), serif;
 }
 
 .grid-two {

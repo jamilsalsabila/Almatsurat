@@ -8,10 +8,20 @@ import { applyTimeMode } from "@/lib/time-mode";
 const MIN_FONT_PT = 1;
 const MAX_FONT_PT = 72;
 const DEFAULT_FONT_PT = 12;
+const SCRIPT_OPTIONS = [
+  { value: "uthmani", label: "Mushaf Standard" },
+  { value: "indopak", label: "IndoPak" },
+  { value: "naskh", label: "Naskh" },
+];
+
+function normalizeScript(value) {
+  return SCRIPT_OPTIONS.some((option) => option.value === value) ? value : "uthmani";
+}
 
 export default function VersionReader({ data, darkMode = false, initialReaderState, onChromeHiddenChange = () => {}, onDarkModeChange = () => {}, onTimeModeChange = () => {}, theme }) {
   const [activeIndex, setActiveIndex] = useState(initialReaderState?.activeIndex ?? 0);
   const [fontSizePt, setFontSizePt] = useState(initialReaderState?.fontSizePt ?? DEFAULT_FONT_PT);
+  const [quranScript, setQuranScript] = useState(normalizeScript(initialReaderState?.quranScript));
   const [timeMode, setTimeMode] = useState(initialReaderState?.timeMode ?? "pagi");
   const [navDirection, setNavDirection] = useState("next");
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
@@ -27,6 +37,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
 
     const savedIndex = window.localStorage.getItem(`${data.slug}-active-index`);
     const savedFontSizeMode = window.localStorage.getItem(`${data.slug}-font-size-mode`);
+    const savedQuranScript = window.localStorage.getItem(`${data.slug}-quran-script`);
     const savedTimeMode = window.localStorage.getItem(`${data.slug}-time-mode`);
 
     if (initialReaderState?.hasQueryState) {
@@ -48,6 +59,8 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     if (savedTimeMode === "pagi" || savedTimeMode === "petang") {
       setTimeMode(savedTimeMode);
     }
+
+    setQuranScript(normalizeScript(savedQuranScript));
   }, [data.cards.length, data.slug, initialReaderState?.hasQueryState]);
 
   useEffect(() => {
@@ -63,6 +76,13 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     }
     window.localStorage.setItem(`${data.slug}-font-size-mode`, String(fontSizePt));
   }, [data.slug, fontSizePt]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    window.localStorage.setItem(`${data.slug}-quran-script`, quranScript);
+  }, [data.slug, quranScript]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -166,12 +186,14 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     const nextFont = overrides.fontSizePt ?? fontSizePt;
     const nextTimeMode = overrides.timeMode ?? timeMode;
     const nextDarkMode = overrides.darkMode ?? darkMode;
+    const nextQuranScript = overrides.quranScript ?? quranScript;
     const nextCount = overrides.currentCount ?? initialReaderState?.currentCount ?? 0;
 
     params.set("i", String(nextIndex));
     params.set("font", String(nextFont));
     params.set("mode", nextTimeMode);
     params.set("theme", nextDarkMode ? "dark" : "light");
+    params.set("script", nextQuranScript);
     params.set("count", String(nextCount));
 
     return `/${data.slug}?${params.toString()}`;
@@ -191,6 +213,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const smallerFontHref = buildReaderHref({ fontSizePt: Math.max(MIN_FONT_PT, fontSizePt - 1) });
   const largerFontHref = buildReaderHref({ fontSizePt: Math.min(MAX_FONT_PT, fontSizePt + 1) });
   const resetHref = buildReaderHref({ currentCount: 0 });
+  const quranScriptLabel = SCRIPT_OPTIONS.find((option) => option.value === quranScript)?.label ?? "Uthmani";
 
   return (
     <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}${legacyIosSafariMode ? " reader-legacy-mobile" : ""}`}>
@@ -217,8 +240,9 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               </span>
               {activeCard.titleArabic}
             </span>
-            <span className="reader-mobile-settings-hint">Buka pengaturan</span>
-          </button>
+              <span className="reader-mobile-settings-hint">Buka pengaturan</span>
+              <span className="reader-mobile-settings-script">{quranScriptLabel}</span>
+            </button>
 
           <div className="reader-mode-actions">
             <div className="reader-segment">
@@ -355,6 +379,23 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               </div>
 
               <div className="reader-settings-group">
+                <span className="reader-settings-label">Gaya script Qur'an</span>
+                <div className="reader-segment reader-settings-segment">
+                  {SCRIPT_OPTIONS.map((option) => (
+                    <button
+                      className={`reader-segment-button${quranScript === option.value ? " active" : ""}`}
+                      key={option.value}
+                      {...bindTouchPress(() => setQuranScript(option.value))}
+                      style={quranScript === option.value ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
+                      type="button"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="reader-settings-group">
                 <span className="reader-settings-label">Ukuran huruf</span>
                 <div className="reader-settings-font-row">
                   <button className="reader-segment-button reader-settings-font-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
@@ -413,6 +454,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               index={activeIndex}
               legacyHrefBuilder={legacyIosSafariMode ? buildReaderHref : null}
               legacyMode={legacyIosSafariMode}
+              quranScript={quranScript}
               readerMode
               storageKey={`${data.slug}-count-${activeIndex}`}
               touchMode={touchMode}
