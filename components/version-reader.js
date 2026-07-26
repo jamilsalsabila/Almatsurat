@@ -25,6 +25,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const [timeMode, setTimeMode] = useState(initialReaderState?.timeMode ?? "pagi");
   const [navDirection, setNavDirection] = useState("next");
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(initialReaderState?.settingsOpen ?? false);
+  const [resetNonce, setResetNonce] = useState(0);
   const [disableTouchSwipe, setDisableTouchSwipe] = useState(false);
   const [touchMode, setTouchMode] = useState(false);
   const [legacyIosSafariMode, setLegacyIosSafariMode] = useState(false);
@@ -149,6 +150,15 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     };
   }
 
+  function runAsSpa(event, action) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    action();
+  }
+
   function showPrevious() {
     setNavDirection("previous");
     setActiveIndex((current) => (current - 1 + data.cards.length) % data.cards.length);
@@ -169,7 +179,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     });
 
     window.localStorage.setItem(`${data.slug}-active-index`, String(activeIndex));
-    window.location.reload();
+    setResetNonce((current) => current + 1);
   }
 
   function decreaseFont() {
@@ -237,7 +247,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
             </div>
           </div>
 
-          <Link className="reader-mobile-settings-trigger" href={settingsHref} onClick={() => setMobileSettingsOpen(true)}>
+          <Link className="reader-mobile-settings-trigger" href={settingsHref} onClick={(event) => runAsSpa(event, () => setMobileSettingsOpen(true))}>
             <span className="reader-mobile-settings-kicker">Mode Fokus</span>
             <span className="reader-mobile-settings-summary">
               {activeIndex + 1} / {data.cards.length}
@@ -252,31 +262,31 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
 
           <div className="reader-mode-actions">
             <div className="reader-segment">
-              <Link className={`reader-segment-button${darkMode ? " active" : ""}`} href={darkToggleHref} onClick={() => onDarkModeChange(!darkMode)} style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}>
+              <Link className={`reader-segment-button${darkMode ? " active" : ""}`} href={darkToggleHref} onClick={(event) => runAsSpa(event, () => onDarkModeChange(!darkMode))} style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}>
                 {darkMode ? "Dark On" : "Dark Off"}
               </Link>
             </div>
 
             <div className="reader-segment">
-              <Link className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`} href={morningHref} onClick={() => setTimeMode("pagi")} style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
+              <Link className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`} href={morningHref} onClick={(event) => runAsSpa(event, () => setTimeMode("pagi"))} style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
                 Pagi
               </Link>
-              <Link className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`} href={eveningHref} onClick={() => setTimeMode("petang")} style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
+              <Link className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`} href={eveningHref} onClick={(event) => runAsSpa(event, () => setTimeMode("petang"))} style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
                 Petang
               </Link>
             </div>
 
             <div className="reader-segment">
-              <Link className="reader-segment-button" href={smallerFontHref} onClick={() => decreaseFont()} aria-disabled={fontSizePt <= MIN_FONT_PT}>
+              <Link className="reader-segment-button" href={smallerFontHref} onClick={(event) => runAsSpa(event, decreaseFont)} aria-disabled={fontSizePt <= MIN_FONT_PT}>
                 Perkecil
               </Link>
               <span className="reader-font-indicator">{fontSizePt}pt</span>
-              <Link className="reader-segment-button" href={largerFontHref} onClick={() => increaseFont()} aria-disabled={fontSizePt >= MAX_FONT_PT}>
+              <Link className="reader-segment-button" href={largerFontHref} onClick={(event) => runAsSpa(event, increaseFont)} aria-disabled={fontSizePt >= MAX_FONT_PT}>
                 Perbesar
               </Link>
             </div>
 
-            <Link className="reader-reset" href={resetHref} onClick={() => handleResetAll()}>
+            <Link className="reader-reset" href={resetHref} onClick={(event) => runAsSpa(event, handleResetAll)}>
               Reset semua hitungan
             </Link>
           </div>
@@ -284,14 +294,14 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
 
         {mobileSettingsOpen && !legacyIosSafariMode ? (
           <div className="reader-settings-sheet" role="dialog" aria-modal="true" aria-label="Pengaturan bacaan">
-            <Link className="reader-settings-backdrop" href={closeSettingsHref} onClick={() => setMobileSettingsOpen(false)} aria-label="Tutup pengaturan" />
+            <Link className="reader-settings-backdrop" href={closeSettingsHref} onClick={(event) => runAsSpa(event, () => setMobileSettingsOpen(false))} aria-label="Tutup pengaturan" />
             <div className="reader-settings-panel">
               <div className="reader-settings-header">
                 <div>
                   <span className="reader-settings-kicker">Pengaturan</span>
                   <h2 className="reader-settings-title">Sesuaikan tampilan baca</h2>
                 </div>
-                <Link className="reader-settings-close" href={closeSettingsHref} onClick={() => setMobileSettingsOpen(false)}>
+                <Link className="reader-settings-close" href={closeSettingsHref} onClick={(event) => runAsSpa(event, () => setMobileSettingsOpen(false))}>
                   Tutup
                 </Link>
               </div>
@@ -302,7 +312,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
                   <Link
                     className={`reader-segment-button${darkMode ? " active" : ""}`}
                     href={darkToggleHref}
-                    onClick={() => onDarkModeChange(!darkMode)}
+                    onClick={(event) => runAsSpa(event, () => onDarkModeChange(!darkMode))}
                     style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
                   >
                     {darkMode ? "Dark On" : "Dark Off"}
@@ -316,7 +326,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
                   <Link
                     className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
                     href={morningHref}
-                    onClick={() => setTimeMode("pagi")}
+                    onClick={(event) => runAsSpa(event, () => setTimeMode("pagi"))}
                     style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
                   >
                     Pagi
@@ -324,7 +334,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
                   <Link
                     className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
                     href={eveningHref}
-                    onClick={() => setTimeMode("petang")}
+                    onClick={(event) => runAsSpa(event, () => setTimeMode("petang"))}
                     style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
                   >
                     Petang
@@ -340,7 +350,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
                       className={`reader-segment-button${quranScript === option.value ? " active" : ""}`}
                       href={buildReaderHref({ quranScript: option.value })}
                       key={option.value}
-                      onClick={() => setQuranScript(option.value)}
+                      onClick={(event) => runAsSpa(event, () => setQuranScript(option.value))}
                       style={quranScript === option.value ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
                     >
                       {option.label}
@@ -352,17 +362,17 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               <div className="reader-settings-group">
                 <span className="reader-settings-label">Ukuran huruf</span>
                 <div className="reader-settings-font-row">
-                  <Link className="reader-segment-button reader-settings-font-button" href={smallerFontHref} onClick={() => decreaseFont()} aria-disabled={fontSizePt <= MIN_FONT_PT}>
+                  <Link className="reader-segment-button reader-settings-font-button" href={smallerFontHref} onClick={(event) => runAsSpa(event, decreaseFont)} aria-disabled={fontSizePt <= MIN_FONT_PT}>
                     Perkecil
                   </Link>
                   <span className="reader-font-indicator reader-settings-font-indicator">{fontSizePt}pt</span>
-                  <Link className="reader-segment-button reader-settings-font-button" href={largerFontHref} onClick={() => increaseFont()} aria-disabled={fontSizePt >= MAX_FONT_PT}>
+                  <Link className="reader-segment-button reader-settings-font-button" href={largerFontHref} onClick={(event) => runAsSpa(event, increaseFont)} aria-disabled={fontSizePt >= MAX_FONT_PT}>
                     Perbesar
                   </Link>
                 </div>
               </div>
 
-              <Link className="reader-reset reader-settings-reset" href={resetHref} onClick={() => handleResetAll()}>
+              <Link className="reader-reset reader-settings-reset" href={resetHref} onClick={(event) => runAsSpa(event, handleResetAll)}>
                 Reset semua hitungan
               </Link>
             </div>
@@ -411,6 +421,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               preferInitialCount={initialReaderState?.hasCountQuery}
               quranScript={quranScript}
               readerMode
+              resetNonce={resetNonce}
               storageKey={`${data.slug}-count-${activeIndex}`}
               touchMode={touchMode}
               theme={theme}
@@ -420,10 +431,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
         </div>
 
         <div className="reader-bottom-nav">
-          <Link className="reader-mode-nav-button" href={previousHref} onClick={() => showPrevious()}>
+          <Link className="reader-mode-nav-button" href={previousHref} onClick={(event) => runAsSpa(event, showPrevious)}>
             Sebelumnya
           </Link>
-          <Link className="reader-mode-nav-button" href={nextHref} onClick={() => showNext()}>
+          <Link className="reader-mode-nav-button" href={nextHref} onClick={(event) => runAsSpa(event, showNext)}>
             Berikutnya
           </Link>
         </div>

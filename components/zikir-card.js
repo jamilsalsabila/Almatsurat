@@ -25,6 +25,7 @@ export default function ZikirCard({
   onFocus,
   preferInitialCount = false,
   quranScript = "uthmani",
+  resetNonce = 0,
   storageKey,
   readerMode = false,
   touchMode = false,
@@ -66,8 +67,21 @@ export default function ZikirCard({
     window.localStorage.setItem(storageKey, String(count));
   }, [count, storageKey]);
 
+  useEffect(() => {
+    setCount(0);
+  }, [resetNonce]);
+
   function handleTap() {
     setCount((current) => (current >= card.count ? 0 : current + 1));
+  }
+
+  function handleTapLink(event) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    handleTap();
   }
 
   function bindTouchPress(action) {
@@ -166,7 +180,7 @@ export default function ZikirCard({
           <div className="progress-fill" style={{ width: `${progress}%`, backgroundColor: theme.accentStrong }} />
         </div>
         {legacyHrefBuilder ? (
-          <Link className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref}>
+          <Link className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref} onClick={handleTapLink}>
             <div className="counter-copy">
               <span className="counter-label" style={{ color: counterLabelColor }}>
                 Hitungan bacaan
