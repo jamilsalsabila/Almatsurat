@@ -23,6 +23,7 @@ export default function ZikirCard({
   legacyHrefBuilder = null,
   legacyMode = false,
   onFocus,
+  preferInitialCount = false,
   quranScript = "uthmani",
   storageKey,
   readerMode = false,
@@ -42,6 +43,10 @@ export default function ZikirCard({
       return;
     }
 
+    if (preferInitialCount) {
+      return;
+    }
+
     const saved = window.localStorage.getItem(storageKey);
     if (!saved) {
       return;
@@ -51,7 +56,7 @@ export default function ZikirCard({
     if (Number.isFinite(parsed) && parsed >= 0) {
       setCount(Math.min(parsed, card.count));
     }
-  }, [card.count, currentCount, legacyMode, storageKey]);
+  }, [card.count, currentCount, legacyMode, preferInitialCount, storageKey]);
 
   useEffect(() => {
     if (!storageKey || typeof window === "undefined") {
@@ -160,7 +165,7 @@ export default function ZikirCard({
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${progress}%`, backgroundColor: theme.accentStrong }} />
         </div>
-        {legacyMode ? (
+        {legacyHrefBuilder ? (
           <Link className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref}>
             <div className="counter-copy">
               <span className="counter-label" style={{ color: counterLabelColor }}>

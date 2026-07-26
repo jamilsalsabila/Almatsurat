@@ -24,7 +24,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const [quranScript, setQuranScript] = useState(normalizeScript(initialReaderState?.quranScript));
   const [timeMode, setTimeMode] = useState(initialReaderState?.timeMode ?? "pagi");
   const [navDirection, setNavDirection] = useState("next");
-  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
+  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(initialReaderState?.settingsOpen ?? false);
   const [disableTouchSwipe, setDisableTouchSwipe] = useState(false);
   const [touchMode, setTouchMode] = useState(false);
   const [legacyIosSafariMode, setLegacyIosSafariMode] = useState(false);
@@ -187,6 +187,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     const nextTimeMode = overrides.timeMode ?? timeMode;
     const nextDarkMode = overrides.darkMode ?? darkMode;
     const nextQuranScript = overrides.quranScript ?? quranScript;
+    const nextSettingsOpen = overrides.settingsOpen ?? mobileSettingsOpen;
     const nextCount = overrides.currentCount ?? initialReaderState?.currentCount ?? 0;
 
     params.set("i", String(nextIndex));
@@ -194,6 +195,9 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     params.set("mode", nextTimeMode);
     params.set("theme", nextDarkMode ? "dark" : "light");
     params.set("script", nextQuranScript);
+    if (nextSettingsOpen) {
+      params.set("settings", "1");
+    }
     params.set("count", String(nextCount));
 
     return `/${data.slug}?${params.toString()}`;
@@ -212,7 +216,9 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const eveningHref = buildReaderHref({ timeMode: "petang" });
   const smallerFontHref = buildReaderHref({ fontSizePt: Math.max(MIN_FONT_PT, fontSizePt - 1) });
   const largerFontHref = buildReaderHref({ fontSizePt: Math.min(MAX_FONT_PT, fontSizePt + 1) });
-  const resetHref = buildReaderHref({ currentCount: 0 });
+  const settingsHref = buildReaderHref({ settingsOpen: true });
+  const closeSettingsHref = buildReaderHref({ settingsOpen: false });
+  const resetHref = buildReaderHref({ currentCount: 0, settingsOpen: mobileSettingsOpen });
   const quranScriptLabel = SCRIPT_OPTIONS.find((option) => option.value === quranScript)?.label ?? "Uthmani";
 
   return (
@@ -231,7 +237,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
             </div>
           </div>
 
-          <button className="reader-mobile-settings-trigger" {...bindTouchPress(() => setMobileSettingsOpen(true))} type="button">
+          <Link className="reader-mobile-settings-trigger" href={settingsHref} onClick={() => setMobileSettingsOpen(true)}>
             <span className="reader-mobile-settings-kicker">Mode Fokus</span>
             <span className="reader-mobile-settings-summary">
               {activeIndex + 1} / {data.cards.length}
@@ -242,139 +248,87 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
             </span>
               <span className="reader-mobile-settings-hint">Buka pengaturan</span>
               <span className="reader-mobile-settings-script">{quranScriptLabel}</span>
-            </button>
+            </Link>
 
           <div className="reader-mode-actions">
             <div className="reader-segment">
-              {legacyIosSafariMode ? (
-                <Link className={`reader-segment-button${darkMode ? " active" : ""}`} href={darkToggleHref} style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}>
-                  {darkMode ? "Dark On" : "Dark Off"}
-                </Link>
-              ) : (
-                <button
-                  className={`reader-segment-button${darkMode ? " active" : ""}`}
-                  {...bindTouchPress(() => onDarkModeChange(!darkMode))}
-                  style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
-                  type="button"
-                >
-                  {darkMode ? "Dark On" : "Dark Off"}
-                </button>
-              )}
-            </div>
-
-            <div className="reader-segment">
-              {legacyIosSafariMode ? (
-                <>
-                  <Link className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`} href={morningHref} style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
-                    Pagi
-                  </Link>
-                  <Link className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`} href={eveningHref} style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
-                    Petang
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <button
-                    className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
-                    {...bindTouchPress(() => setTimeMode("pagi"))}
-                    style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                    type="button"
-                  >
-                    Pagi
-                  </button>
-                  <button
-                    className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
-                    {...bindTouchPress(() => setTimeMode("petang"))}
-                    style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                    type="button"
-                  >
-                    Petang
-                  </button>
-                </>
-              )}
-            </div>
-
-            <div className="reader-segment">
-              {legacyIosSafariMode ? (
-                <Link className="reader-segment-button" href={smallerFontHref}>
-                  Perkecil
-                </Link>
-              ) : (
-                <button className="reader-segment-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
-                  Perkecil
-                </button>
-              )}
-              <span className="reader-font-indicator">{fontSizePt}pt</span>
-              {legacyIosSafariMode ? (
-                <Link className="reader-segment-button" href={largerFontHref}>
-                  Perbesar
-                </Link>
-              ) : (
-                <button className="reader-segment-button" disabled={fontSizePt >= MAX_FONT_PT} {...bindTouchPress(increaseFont)} type="button">
-                  Perbesar
-                </button>
-              )}
-            </div>
-
-            {legacyIosSafariMode ? (
-              <Link className="reader-reset" href={resetHref}>
-                Reset semua hitungan
+              <Link className={`reader-segment-button${darkMode ? " active" : ""}`} href={darkToggleHref} onClick={() => onDarkModeChange(!darkMode)} style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}>
+                {darkMode ? "Dark On" : "Dark Off"}
               </Link>
-            ) : (
-              <button className="reader-reset" {...bindTouchPress(handleResetAll)} type="button">
-                Reset semua hitungan
-              </button>
-            )}
+            </div>
+
+            <div className="reader-segment">
+              <Link className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`} href={morningHref} onClick={() => setTimeMode("pagi")} style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
+                Pagi
+              </Link>
+              <Link className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`} href={eveningHref} onClick={() => setTimeMode("petang")} style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}>
+                Petang
+              </Link>
+            </div>
+
+            <div className="reader-segment">
+              <Link className="reader-segment-button" href={smallerFontHref} onClick={() => decreaseFont()} aria-disabled={fontSizePt <= MIN_FONT_PT}>
+                Perkecil
+              </Link>
+              <span className="reader-font-indicator">{fontSizePt}pt</span>
+              <Link className="reader-segment-button" href={largerFontHref} onClick={() => increaseFont()} aria-disabled={fontSizePt >= MAX_FONT_PT}>
+                Perbesar
+              </Link>
+            </div>
+
+            <Link className="reader-reset" href={resetHref} onClick={() => handleResetAll()}>
+              Reset semua hitungan
+            </Link>
           </div>
         </div>
 
         {mobileSettingsOpen && !legacyIosSafariMode ? (
           <div className="reader-settings-sheet" role="dialog" aria-modal="true" aria-label="Pengaturan bacaan">
-            <button className="reader-settings-backdrop" {...bindTouchPress(() => setMobileSettingsOpen(false))} type="button" aria-label="Tutup pengaturan" />
+            <Link className="reader-settings-backdrop" href={closeSettingsHref} onClick={() => setMobileSettingsOpen(false)} aria-label="Tutup pengaturan" />
             <div className="reader-settings-panel">
               <div className="reader-settings-header">
                 <div>
                   <span className="reader-settings-kicker">Pengaturan</span>
                   <h2 className="reader-settings-title">Sesuaikan tampilan baca</h2>
                 </div>
-                <button className="reader-settings-close" {...bindTouchPress(() => setMobileSettingsOpen(false))} type="button">
+                <Link className="reader-settings-close" href={closeSettingsHref} onClick={() => setMobileSettingsOpen(false)}>
                   Tutup
-                </button>
+                </Link>
               </div>
 
               <div className="reader-settings-group">
                 <span className="reader-settings-label">Mode tampilan</span>
                 <div className="reader-segment reader-settings-segment">
-                  <button
+                  <Link
                     className={`reader-segment-button${darkMode ? " active" : ""}`}
-                    {...bindTouchPress(() => onDarkModeChange(!darkMode))}
+                    href={darkToggleHref}
+                    onClick={() => onDarkModeChange(!darkMode)}
                     style={darkMode ? { backgroundColor: theme.darkAccent, color: "white" } : {}}
-                    type="button"
                   >
                     {darkMode ? "Dark On" : "Dark Off"}
-                  </button>
+                  </Link>
                 </div>
               </div>
 
               <div className="reader-settings-group">
                 <span className="reader-settings-label">Waktu baca</span>
                 <div className="reader-segment reader-settings-segment">
-                  <button
+                  <Link
                     className={`reader-segment-button${timeMode === "pagi" ? " active" : ""}`}
-                    {...bindTouchPress(() => setTimeMode("pagi"))}
+                    href={morningHref}
+                    onClick={() => setTimeMode("pagi")}
                     style={timeMode === "pagi" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                    type="button"
                   >
                     Pagi
-                  </button>
-                  <button
+                  </Link>
+                  <Link
                     className={`reader-segment-button${timeMode === "petang" ? " active" : ""}`}
-                    {...bindTouchPress(() => setTimeMode("petang"))}
+                    href={eveningHref}
+                    onClick={() => setTimeMode("petang")}
                     style={timeMode === "petang" ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                    type="button"
                   >
                     Petang
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -382,15 +336,15 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
                 <span className="reader-settings-label">Gaya script Qur'an</span>
                 <div className="reader-segment reader-settings-segment">
                   {SCRIPT_OPTIONS.map((option) => (
-                    <button
+                    <Link
                       className={`reader-segment-button${quranScript === option.value ? " active" : ""}`}
+                      href={buildReaderHref({ quranScript: option.value })}
                       key={option.value}
-                      {...bindTouchPress(() => setQuranScript(option.value))}
+                      onClick={() => setQuranScript(option.value)}
                       style={quranScript === option.value ? { backgroundColor: darkMode ? theme.darkAccent : theme.accent, color: "white" } : {}}
-                      type="button"
                     >
                       {option.label}
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -398,19 +352,19 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               <div className="reader-settings-group">
                 <span className="reader-settings-label">Ukuran huruf</span>
                 <div className="reader-settings-font-row">
-                  <button className="reader-segment-button reader-settings-font-button" disabled={fontSizePt <= MIN_FONT_PT} {...bindTouchPress(decreaseFont)} type="button">
+                  <Link className="reader-segment-button reader-settings-font-button" href={smallerFontHref} onClick={() => decreaseFont()} aria-disabled={fontSizePt <= MIN_FONT_PT}>
                     Perkecil
-                  </button>
+                  </Link>
                   <span className="reader-font-indicator reader-settings-font-indicator">{fontSizePt}pt</span>
-                  <button className="reader-segment-button reader-settings-font-button" disabled={fontSizePt >= MAX_FONT_PT} {...bindTouchPress(increaseFont)} type="button">
+                  <Link className="reader-segment-button reader-settings-font-button" href={largerFontHref} onClick={() => increaseFont()} aria-disabled={fontSizePt >= MAX_FONT_PT}>
                     Perbesar
-                  </button>
+                  </Link>
                 </div>
               </div>
 
-              <button className="reader-reset reader-settings-reset" {...bindTouchPress(handleResetAll)} type="button">
+              <Link className="reader-reset reader-settings-reset" href={resetHref} onClick={() => handleResetAll()}>
                 Reset semua hitungan
-              </button>
+              </Link>
             </div>
           </div>
         ) : null}
@@ -452,8 +406,9 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               darkMode={darkMode}
               fontSizePt={fontSizePt}
               index={activeIndex}
-              legacyHrefBuilder={legacyIosSafariMode ? buildReaderHref : null}
+              legacyHrefBuilder={buildReaderHref}
               legacyMode={legacyIosSafariMode}
+              preferInitialCount={initialReaderState?.hasCountQuery}
               quranScript={quranScript}
               readerMode
               storageKey={`${data.slug}-count-${activeIndex}`}
@@ -465,25 +420,12 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
         </div>
 
         <div className="reader-bottom-nav">
-          {legacyIosSafariMode ? (
-            <>
-              <Link className="reader-mode-nav-button" href={previousHref}>
-                Sebelumnya
-              </Link>
-              <Link className="reader-mode-nav-button" href={nextHref}>
-                Berikutnya
-              </Link>
-            </>
-          ) : (
-            <>
-              <button className="reader-mode-nav-button" {...bindTouchPress(showPrevious)} type="button">
-                Sebelumnya
-              </button>
-              <button className="reader-mode-nav-button" {...bindTouchPress(showNext)} type="button">
-                Berikutnya
-              </button>
-            </>
-          )}
+          <Link className="reader-mode-nav-button" href={previousHref} onClick={() => showPrevious()}>
+            Sebelumnya
+          </Link>
+          <Link className="reader-mode-nav-button" href={nextHref} onClick={() => showNext()}>
+            Berikutnya
+          </Link>
         </div>
       </section>
   );
