@@ -783,7 +783,6 @@ button {
   right: 10px;
 }
 
-.reader-mode-frame:hover .reader-mode-edge,
 .reader-mode-frame.controls-visible .reader-mode-edge {
   opacity: 1;
 }

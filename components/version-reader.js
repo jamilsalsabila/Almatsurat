@@ -154,6 +154,32 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     }, 2500);
   }
 
+  function hideControlsNow() {
+    if (hideControlsTimeoutRef.current) {
+      window.clearTimeout(hideControlsTimeoutRef.current);
+      hideControlsTimeoutRef.current = null;
+    }
+    setControlsVisible(false);
+  }
+
+  function isHoverCapable() {
+    return typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(hover: hover)").matches;
+  }
+
+  function handleFrameMouseEnter() {
+    if (!isHoverCapable()) {
+      return;
+    }
+    revealControls();
+  }
+
+  function handleFrameMouseLeave() {
+    if (!isHoverCapable()) {
+      return;
+    }
+    hideControlsNow();
+  }
+
   function runAsSpa(event, action) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
@@ -369,7 +395,8 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
         onTouchStart={handleFrameTouchStart}
         onTouchEnd={handleFrameTouchEnd}
         onTouchCancel={() => { touchStartRef.current = null; }}
-        onMouseEnter={revealControls}
+        onMouseEnter={handleFrameMouseEnter}
+        onMouseLeave={handleFrameMouseLeave}
       >
         <a className="reader-mode-edge reader-mode-edge-prev" href={previousHref} onClick={(event) => runAsSpa(event, showPrevious)} aria-label="Sebelumnya">
           <span aria-hidden="true">&lsaquo;</span>
