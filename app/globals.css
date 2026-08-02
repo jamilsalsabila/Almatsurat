@@ -650,6 +650,7 @@ button {
   display: grid;
   gap: 18px;
   padding-bottom: 110px;
+  padding-top: calc(68px + env(safe-area-inset-top));
 }
 
 .reader-segment {
@@ -967,6 +968,7 @@ button {
 
 .reader-legacy-mobile {
   padding-bottom: 28px;
+  padding-top: 0;
 }
 
 .reader-legacy-mobile .reader-card-stage {
