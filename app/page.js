@@ -1,32 +1,28 @@
 import Link from "next/link";
 import { getVersionList } from "@/lib/almatsurat";
+import { pickRandomScene } from "@/lib/background-scenes";
 
 export default function HomePage() {
   const versions = getVersionList();
+  const backgroundScene = pickRandomScene("pagi");
 
   return (
-    <main className="site-shell" style={{ background: "linear-gradient(180deg, #f1f5f6 0%, #f4f1eb 100%)" }}>
+    <main className="site-shell scenic-shell scenic-pagi" style={{ backgroundColor: "#eef4f2" }}>
+      <div
+        className="scenic-shell-layer scenic-shell-layer-current"
+        style={{ backgroundImage: `linear-gradient(rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78)), url(${backgroundScene})` }}
+      />
       <div className="site-container mushaf-home" style={{ padding: "40px 0 84px" }}>
         <section className="mushaf-home-hero">
           <div className="mushaf-home-kicker">Mushaf Modern</div>
-          <div className="mushaf-home-grid">
-            <div style={{ display: "grid", gap: 14 }}>
-              <h1 className="naskh-text" style={{ margin: 0, fontSize: "clamp(42px, 6vw, 78px)", lineHeight: 1.02 }}>
-                Almatsurat Web
-              </h1>
-              <p className="mushaf-home-copy">
-                Bacaan Al-Ma&apos;tsurat Sugro dan Kubro dalam tampilan yang tenang, rapi, dan nyaman untuk dibaca lama
-                di layar ponsel.
-              </p>
-            </div>
-
-            <div className="mushaf-home-note">
-              <div className="mushaf-home-note-mark">۞</div>
-              <p>
-                Dirancang dengan fokus pada tipografi Arab, ritme bacaan, dan pengalaman visual yang lebih dekat ke lembar
-                mushaf modern daripada halaman artikel biasa.
-              </p>
-            </div>
+          <div style={{ display: "grid", gap: 14 }}>
+            <h1 className="naskh-text" style={{ margin: 0, fontSize: "clamp(42px, 6vw, 78px)", lineHeight: 1.02 }}>
+              Almatsurat Web
+            </h1>
+            <p className="mushaf-home-copy">
+              Bacaan Al-Ma&apos;tsurat Sugro dan Kubro dalam tampilan yang tenang, rapi, dan nyaman untuk dibaca lama
+              di layar ponsel.
+            </p>
           </div>
         </section>
 
