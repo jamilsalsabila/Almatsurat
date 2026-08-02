@@ -271,6 +271,7 @@ button {
   padding: 32px;
   border: 1px solid rgba(255, 255, 255, 0.52);
   box-shadow: var(--shadow-soft);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 
@@ -668,6 +669,7 @@ button {
   justify-content: center;
   gap: 18px;
   flex-wrap: wrap;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 12;
@@ -887,6 +889,7 @@ button {
   border-radius: 22px;
   border: 1px solid rgba(17, 17, 17, 0.07);
   background: rgba(242, 245, 247, 0.92);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 14px 30px rgba(24, 37, 41, 0.1);
   transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
@@ -1094,6 +1097,7 @@ button {
   width: 100%;
   margin-top: 14px;
   box-shadow: none;
+  -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 

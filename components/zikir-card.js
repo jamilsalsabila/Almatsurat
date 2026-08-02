@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { applyTimeMode } from "@/lib/time-mode";
 
@@ -180,7 +179,7 @@ export default function ZikirCard({
           <div className="progress-fill" style={{ width: `${progress}%`, backgroundColor: theme.accentStrong }} />
         </div>
         {legacyHrefBuilder ? (
-          <Link className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref} onClick={handleTapLink}>
+          <a className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref} onClick={handleTapLink}>
             <div className="counter-copy">
               <span className="counter-label" style={{ color: counterLabelColor }}>
                 Hitungan bacaan
@@ -204,7 +203,7 @@ export default function ZikirCard({
             >
               {complete ? "Ulangi" : "Tap"}
             </span>
-          </Link>
+          </a>
         ) : (
           <button
             className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`}
