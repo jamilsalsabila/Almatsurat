@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import AlmatsuratPage from "@/components/almatsurat-page";
 import VersionList from "@/components/version-list";
 import VersionReader from "@/components/version-reader";
-import { pickRandomScene } from "@/lib/background-scenes";
+import { getDefaultScene, pickRandomScene } from "@/lib/background-scenes";
 
 export default function VersionScreen({ data, theme, initialReaderState }) {
   const [darkMode, setDarkMode] = useState(initialReaderState?.darkMode ?? false);
   const [chromeHidden, setChromeHidden] = useState(false);
   const [backgroundMode, setBackgroundMode] = useState(initialReaderState?.timeMode ?? "pagi");
-  const [backgroundScene, setBackgroundScene] = useState(() => pickRandomScene(initialReaderState?.timeMode ?? "pagi"));
+  const [backgroundScene, setBackgroundScene] = useState(() => getDefaultScene(initialReaderState?.timeMode ?? "pagi"));
   const [previousBackgroundScene, setPreviousBackgroundScene] = useState("");
   const [isSceneTransitioning, setIsSceneTransitioning] = useState(false);
   const [focusIndex, setFocusIndex] = useState(
