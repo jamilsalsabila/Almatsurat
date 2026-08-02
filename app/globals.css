@@ -596,10 +596,11 @@ button {
 
 .mushaf-topbar.chrome-hidden,
 .mushaf-header-stack.chrome-hidden {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-  visibility: visible;
+  display: none;
+}
+
+.version-page.chrome-hidden {
+  padding-top: 0;
 }
 
 .intro-card {

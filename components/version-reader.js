@@ -96,7 +96,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   }, [onTimeModeChange, timeMode]);
 
   useEffect(() => {
-    onChromeHiddenChange(false);
+    onChromeHiddenChange(true);
     return () => onChromeHiddenChange(false);
   }, [onChromeHiddenChange]);
 

@@ -39,7 +39,7 @@ export default function AlmatsuratPage({
       {previousSceneStyle ? (
         <div className={`scenic-shell-layer scenic-shell-layer-previous${isSceneTransitioning ? " scene-exiting" : ""}`} style={previousSceneStyle} />
       ) : null}
-      <div className="site-container version-page">
+      <div className={`site-container version-page${chromeHidden ? " chrome-hidden" : ""}`}>
         <div className={`topbar mushaf-topbar${chromeHidden ? " chrome-hidden" : ""}`}>
           <Link className="brand-link" href="/">
             <span

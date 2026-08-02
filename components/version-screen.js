@@ -8,7 +8,7 @@ import { getDefaultScene, pickRandomScene } from "@/lib/background-scenes";
 
 export default function VersionScreen({ data, theme, initialReaderState }) {
   const [darkMode, setDarkMode] = useState(initialReaderState?.darkMode ?? false);
-  const [chromeHidden, setChromeHidden] = useState(false);
+  const [chromeHidden, setChromeHidden] = useState(Boolean(initialReaderState?.focusOpen));
   const [backgroundMode, setBackgroundMode] = useState(initialReaderState?.timeMode ?? "pagi");
   const [backgroundScene, setBackgroundScene] = useState(() => getDefaultScene(initialReaderState?.timeMode ?? "pagi"));
   const [previousBackgroundScene, setPreviousBackgroundScene] = useState("");
