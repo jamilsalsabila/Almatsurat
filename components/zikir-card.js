@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyTimeMode } from "@/lib/time-mode";
 import { toArabicNumber } from "@/lib/arabic-numerals";
 
@@ -22,6 +22,8 @@ export default function ZikirCard({
   const progress = Math.min((count / card.count) * 100, 100);
   const complete = count >= card.count;
   const [isPressing, setIsPressing] = useState(false);
+  const lastWrittenCountRef = useRef(currentCount);
+  const lastResetNonceRef = useRef(resetNonce);
   const basmallahEntries = card.entries.filter((entry) => entry.type === "basmallah");
   const mainEntries = card.entries.filter((entry) => entry.type !== "basmallah");
 
@@ -35,7 +37,7 @@ export default function ZikirCard({
     }
 
     const saved = window.localStorage.getItem(storageKey);
-    if (!saved) {
+    if (saved === null) {
       return;
     }
 
@@ -50,10 +52,20 @@ export default function ZikirCard({
       return;
     }
 
+    if (lastWrittenCountRef.current === count) {
+      return;
+    }
+
+    lastWrittenCountRef.current = count;
     window.localStorage.setItem(storageKey, String(count));
   }, [count, storageKey]);
 
   useEffect(() => {
+    if (lastResetNonceRef.current === resetNonce) {
+      return;
+    }
+
+    lastResetNonceRef.current = resetNonce;
     setCount(0);
   }, [resetNonce]);
 

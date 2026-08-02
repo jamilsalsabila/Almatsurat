@@ -47,7 +47,11 @@ export default async function VersionPage({ params, searchParams }) {
     settingsOpen: query?.settings === "1",
     focusOpen: query?.focus === "1",
     hasCountQuery: query?.count !== undefined,
-    hasQueryState: Boolean(query?.i || query?.font || query?.mode || query?.theme || query?.script || query?.settings || query?.count || query?.focus),
+    hasIndexQuery: query?.i !== undefined,
+    hasFontQuery: query?.font !== undefined,
+    hasScriptQuery: query?.script !== undefined,
+    hasTimeModeQuery: query?.mode !== undefined,
+    hasThemeQuery: query?.theme !== undefined,
   };
 
   return <VersionScreen data={data} initialReaderState={initialReaderState} theme={theme} />;

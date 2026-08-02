@@ -14,6 +14,7 @@ function buildPreview(card, timeMode) {
 
 export default function VersionList({ data, darkMode = false, onOpenCard, theme, timeMode = "pagi" }) {
   const [counts, setCounts] = useState({});
+  const [lastReadIndex, setLastReadIndex] = useState(null);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -22,10 +23,15 @@ export default function VersionList({ data, darkMode = false, onOpenCard, theme,
 
     const nextCounts = {};
     data.cards.forEach((card, index) => {
-      const saved = Number(window.localStorage.getItem(`${data.slug}-count-${index}`));
+      const rawCount = window.localStorage.getItem(`${data.slug}-count-${index}`);
+      const saved = rawCount === null ? NaN : Number(rawCount);
       nextCounts[index] = Number.isFinite(saved) ? Math.min(Math.max(saved, 0), card.count) : 0;
     });
     setCounts(nextCounts);
+
+    const rawIndex = window.localStorage.getItem(`${data.slug}-active-index`);
+    const savedIndex = rawIndex === null ? NaN : Number(rawIndex);
+    setLastReadIndex(Number.isFinite(savedIndex) && savedIndex >= 0 && savedIndex < data.cards.length ? savedIndex : null);
   }, [data.cards, data.slug]);
 
   function runAsSpa(event, index) {
@@ -72,6 +78,7 @@ export default function VersionList({ data, darkMode = false, onOpenCard, theme,
                 <div className="version-list-progress-fill" style={{ width: `${progress}%`, backgroundColor: theme.accentStrong }} />
               </div>
               <span className="version-list-hint">
+                {index === lastReadIndex ? "Terakhir dibaca · " : ""}
                 {complete ? `Selesai ${count}/${card.count} · Ketuk untuk mode fokus` : `${count}/${card.count} · Ketuk untuk mode fokus`}
               </span>
             </div>

@@ -29,39 +29,37 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const [controlsVisible, setControlsVisible] = useState(false);
   const touchStartRef = useRef(null);
   const hideControlsTimeoutRef = useRef(null);
+  const lastWrittenFontRef = useRef(initialReaderState?.fontSizePt ?? DEFAULT_FONT_PT);
+  const lastWrittenScriptRef = useRef(normalizeScript(initialReaderState?.quranScript));
+  const lastWrittenTimeModeRef = useRef(initialReaderState?.timeMode ?? "pagi");
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    const savedIndex = window.localStorage.getItem(`${data.slug}-active-index`);
-    const savedFontSizeMode = window.localStorage.getItem(`${data.slug}-font-size-mode`);
-    const savedQuranScript = window.localStorage.getItem(`${data.slug}-quran-script`);
-    const savedTimeMode = window.localStorage.getItem(`${data.slug}-time-mode`);
-
-    if (initialReaderState?.hasQueryState) {
-      return;
-    }
-
-    if (savedIndex) {
-      const parsed = Number(savedIndex);
-      if (Number.isFinite(parsed) && parsed >= 0 && parsed < data.cards.length) {
-        setActiveIndex(parsed);
+    if (!initialReaderState?.hasFontQuery) {
+      const savedFontSizeMode = window.localStorage.getItem(`${data.slug}-font-size-mode`);
+      const parsedFontPt = savedFontSizeMode === null ? NaN : Number(savedFontSizeMode);
+      if (Number.isFinite(parsedFontPt)) {
+        setFontSizePt(Math.min(MAX_FONT_PT, Math.max(MIN_FONT_PT, parsedFontPt)));
       }
     }
 
-    const parsedFontPt = Number(savedFontSizeMode);
-    if (Number.isFinite(parsedFontPt)) {
-      setFontSizePt(Math.min(MAX_FONT_PT, Math.max(MIN_FONT_PT, parsedFontPt)));
+    if (!initialReaderState?.hasScriptQuery) {
+      const savedQuranScript = window.localStorage.getItem(`${data.slug}-quran-script`);
+      if (savedQuranScript) {
+        setQuranScript(normalizeScript(savedQuranScript));
+      }
     }
 
-    if (savedTimeMode === "pagi" || savedTimeMode === "petang") {
-      setTimeMode(savedTimeMode);
+    if (!initialReaderState?.hasTimeModeQuery) {
+      const savedTimeMode = window.localStorage.getItem(`${data.slug}-time-mode`);
+      if (savedTimeMode === "pagi" || savedTimeMode === "petang") {
+        setTimeMode(savedTimeMode);
+      }
     }
-
-    setQuranScript(normalizeScript(savedQuranScript));
-  }, [data.cards.length, data.slug, initialReaderState?.hasQueryState]);
+  }, [data.slug, initialReaderState?.hasFontQuery, initialReaderState?.hasScriptQuery, initialReaderState?.hasTimeModeQuery]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -74,6 +72,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     if (typeof window === "undefined") {
       return;
     }
+    if (lastWrittenFontRef.current === fontSizePt) {
+      return;
+    }
+    lastWrittenFontRef.current = fontSizePt;
     window.localStorage.setItem(`${data.slug}-font-size-mode`, String(fontSizePt));
   }, [data.slug, fontSizePt]);
 
@@ -81,6 +83,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     if (typeof window === "undefined") {
       return;
     }
+    if (lastWrittenScriptRef.current === quranScript) {
+      return;
+    }
+    lastWrittenScriptRef.current = quranScript;
     window.localStorage.setItem(`${data.slug}-quran-script`, quranScript);
   }, [data.slug, quranScript]);
 
@@ -88,6 +94,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     if (typeof window === "undefined") {
       return;
     }
+    if (lastWrittenTimeModeRef.current === timeMode) {
+      return;
+    }
+    lastWrittenTimeModeRef.current = timeMode;
     window.localStorage.setItem(`${data.slug}-time-mode`, timeMode);
   }, [data.slug, timeMode]);
 

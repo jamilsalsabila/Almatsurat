@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AlmatsuratPage from "@/components/almatsurat-page";
 import VersionList from "@/components/version-list";
 import VersionReader from "@/components/version-reader";
@@ -16,6 +16,7 @@ export default function VersionScreen({ data, theme, initialReaderState }) {
   const [focusIndex, setFocusIndex] = useState(
     initialReaderState?.focusOpen ? (initialReaderState?.activeIndex ?? 0) : null
   );
+  const lastWrittenDarkModeRef = useRef(initialReaderState?.darkMode ?? false);
 
   function openFocus(index) {
     setFocusIndex(index);
@@ -55,20 +56,25 @@ export default function VersionScreen({ data, theme, initialReaderState }) {
       return;
     }
 
-    if (initialReaderState?.hasQueryState) {
+    if (initialReaderState?.hasThemeQuery) {
       return;
     }
 
     if (window.localStorage.getItem(`${data.slug}-dark-mode`) === "true") {
       setDarkMode(true);
     }
-  }, [data.slug, initialReaderState?.hasQueryState]);
+  }, [data.slug, initialReaderState?.hasThemeQuery]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
+    if (lastWrittenDarkModeRef.current === darkMode) {
+      return;
+    }
+
+    lastWrittenDarkModeRef.current = darkMode;
     window.localStorage.setItem(`${data.slug}-dark-mode`, String(darkMode));
   }, [darkMode, data.slug]);
 
@@ -115,7 +121,7 @@ export default function VersionScreen({ data, theme, initialReaderState }) {
           onDarkModeChange={setDarkMode}
           onTimeModeChange={setBackgroundMode}
           data={data}
-          initialReaderState={{ ...initialReaderState, activeIndex: focusIndex, hasQueryState: true }}
+          initialReaderState={{ ...initialReaderState, activeIndex: focusIndex, hasIndexQuery: true }}
           theme={theme}
         />
       ) : (
