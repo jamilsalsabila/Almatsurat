@@ -19,14 +19,14 @@ export default function AlmatsuratPage({
   };
   const activeSceneStyle = backgroundScene
     ? {
-        backgroundImage: `${darkMode ? "linear-gradient(180deg, rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(180deg, rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${backgroundScene})`,
+        backgroundImage: `${darkMode ? "linear-gradient(rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${backgroundScene})`,
       }
     : {
         backgroundImage: darkMode ? theme.darkBackground : theme.background,
       };
   const previousSceneStyle = previousBackgroundScene
     ? {
-        backgroundImage: `${darkMode ? "linear-gradient(180deg, rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(180deg, rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${previousBackgroundScene})`,
+        backgroundImage: `${darkMode ? "linear-gradient(rgba(8, 13, 16, 0.84), rgba(8, 13, 16, 0.72))" : "linear-gradient(rgba(248, 251, 252, 0.72), rgba(248, 251, 252, 0.78))"}, url(${previousBackgroundScene})`,
       }
     : null;
 

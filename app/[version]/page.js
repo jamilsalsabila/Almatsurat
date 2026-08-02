@@ -45,8 +45,9 @@ export default async function VersionPage({ params, searchParams }) {
     quranScript: normalizeScript(query?.script),
     currentCount: clampNumber(query?.count, 0, 999, 0),
     settingsOpen: query?.settings === "1",
+    focusOpen: query?.focus === "1",
     hasCountQuery: query?.count !== undefined,
-    hasQueryState: Boolean(query?.i || query?.font || query?.mode || query?.theme || query?.script || query?.settings || query?.count),
+    hasQueryState: Boolean(query?.i || query?.font || query?.mode || query?.theme || query?.script || query?.settings || query?.count || query?.focus),
   };
 
   return <VersionScreen data={data} initialReaderState={initialReaderState} theme={theme} />;

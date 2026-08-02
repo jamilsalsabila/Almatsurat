@@ -7,6 +7,7 @@ import { applyTimeMode } from "@/lib/time-mode";
 const MIN_FONT_PT = 1;
 const MAX_FONT_PT = 72;
 const DEFAULT_FONT_PT = 12;
+const SWIPE_MIN_DISTANCE = 48;
 const SCRIPT_OPTIONS = [
   { value: "uthmani", label: "Mushaf Standard" },
   { value: "indopak", label: "IndoPak" },
@@ -17,7 +18,7 @@ function normalizeScript(value) {
   return SCRIPT_OPTIONS.some((option) => option.value === value) ? value : "uthmani";
 }
 
-export default function VersionReader({ data, darkMode = false, initialReaderState, onChromeHiddenChange = () => {}, onDarkModeChange = () => {}, onTimeModeChange = () => {}, theme }) {
+export default function VersionReader({ data, darkMode = false, initialReaderState, onChromeHiddenChange = () => {}, onClose = () => {}, onDarkModeChange = () => {}, onTimeModeChange = () => {}, theme }) {
   const [activeIndex, setActiveIndex] = useState(initialReaderState?.activeIndex ?? 0);
   const [fontSizePt, setFontSizePt] = useState(initialReaderState?.fontSizePt ?? DEFAULT_FONT_PT);
   const [quranScript, setQuranScript] = useState(normalizeScript(initialReaderState?.quranScript));
@@ -25,10 +26,8 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const [navDirection, setNavDirection] = useState("next");
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(initialReaderState?.settingsOpen ?? false);
   const [resetNonce, setResetNonce] = useState(0);
-  const [disableTouchSwipe, setDisableTouchSwipe] = useState(false);
-  const [touchMode, setTouchMode] = useState(false);
   const [legacyIosSafariMode, setLegacyIosSafariMode] = useState(false);
-  const lastTouchRef = useRef(0);
+  const touchStartRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -119,35 +118,12 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     }
 
     const userAgent = navigator.userAgent;
-    const hasTouchPoints = typeof navigator.maxTouchPoints === "number" ? navigator.maxTouchPoints > 0 : false;
     const isAppleTouchDevice = /iPhone|iPad|iPod/i.test(userAgent);
     const isSafariBrowser = /Safari/i.test(userAgent) && !/CriOS|FxiOS|EdgiOS/i.test(userAgent);
     const iosVersionMatch = userAgent.match(/OS (\d+)_/i);
     const iosMajorVersion = iosVersionMatch ? Number(iosVersionMatch[1]) : null;
-    setTouchMode(hasTouchPoints || isAppleTouchDevice);
-    setDisableTouchSwipe(isAppleTouchDevice && isSafariBrowser);
     setLegacyIosSafariMode(Boolean(isAppleTouchDevice && isSafariBrowser && iosMajorVersion && iosMajorVersion <= 15));
   }, []);
-
-  function bindTouchPress(action) {
-    return {
-      onClick: () => {
-        if (touchMode && Date.now() - lastTouchRef.current < 500) {
-          return;
-        }
-        action();
-      },
-      onTouchStart: (event) => {
-        if (!touchMode) {
-          return;
-        }
-        event.preventDefault();
-        event.stopPropagation();
-        lastTouchRef.current = Date.now();
-        action();
-      },
-    };
-  }
 
   function runAsSpa(event, action) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
@@ -166,6 +142,39 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   function showNext() {
     setNavDirection("next");
     setActiveIndex((current) => (current + 1) % data.cards.length);
+  }
+
+  function handleFrameTouchStart(event) {
+    if (mobileSettingsOpen || legacyIosSafariMode || event.touches.length !== 1) {
+      touchStartRef.current = null;
+      return;
+    }
+
+    const touch = event.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  }
+
+  function handleFrameTouchEnd(event) {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+
+    if (!start || mobileSettingsOpen || legacyIosSafariMode) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+
+    if (Math.abs(deltaX) < SWIPE_MIN_DISTANCE || Math.abs(deltaX) < Math.abs(deltaY) * 1.3) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      showNext();
+    } else {
+      showPrevious();
+    }
   }
 
   function handleResetAll() {
@@ -199,6 +208,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     const nextSettingsOpen = overrides.settingsOpen ?? mobileSettingsOpen;
     const nextCount = overrides.currentCount ?? initialReaderState?.currentCount ?? 0;
 
+    params.set("focus", "1");
     params.set("i", String(nextIndex));
     params.set("font", String(nextFont));
     params.set("mode", nextTimeMode);
@@ -228,10 +238,15 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const settingsHref = buildReaderHref({ settingsOpen: true });
   const closeSettingsHref = buildReaderHref({ settingsOpen: false });
   const resetHref = buildReaderHref({ currentCount: 0, settingsOpen: mobileSettingsOpen });
+  const closeHref = `/${data.slug}`;
   const quranScriptLabel = SCRIPT_OPTIONS.find((option) => option.value === quranScript)?.label ?? "Uthmani";
 
   return (
     <section className={`reader-mode-shell${darkMode ? " reader-dark" : ""}${legacyIosSafariMode ? " reader-legacy-mobile" : ""}`}>
+        <a className="reader-focus-close" href={closeHref} onClick={(event) => runAsSpa(event, onClose)} aria-label="Tutup mode fokus">
+          <span aria-hidden="true">&times;</span>
+        </a>
+
         <div className="reader-mode-toolbar">
           <div className="reader-mode-status">
             <span className="reader-mode-kicker">Mode Fokus</span>
@@ -382,13 +397,21 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
           <div className="reader-mode-progress-fill" style={{ width: `${progressPercent}%`, backgroundColor: darkMode ? theme.darkAccent : theme.accentStrong }} />
         </div>
 
-        <div className="reader-mode-frame" style={{ borderColor: darkMode ? `${theme.darkAccent}20` : `${theme.accent}18` }}>
+        <div
+          className="reader-mode-frame"
+          style={{ borderColor: darkMode ? `${theme.darkAccent}20` : `${theme.accent}18` }}
+          onTouchStart={handleFrameTouchStart}
+          onTouchEnd={handleFrameTouchEnd}
+          onTouchCancel={() => { touchStartRef.current = null; }}
+        >
           <div className="reader-mode-nav">
             <div className="reader-mode-nav-center">
               <span className="reader-mode-nav-title naskh-text" style={{ color: darkMode ? theme.darkAccent : theme.accent }}>
                 {theme.title}
               </span>
-              <span className="reader-mode-nav-help">Gunakan tombol bawah untuk pindah bacaan</span>
+              <span className="reader-mode-nav-help">
+                {legacyIosSafariMode ? "Gunakan tombol bawah untuk pindah bacaan" : "Geser kiri/kanan atau gunakan tombol bawah untuk pindah bacaan"}
+              </span>
             </div>
           </div>
 
@@ -416,13 +439,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
               fontSizePt={fontSizePt}
               index={activeIndex}
               legacyHrefBuilder={buildReaderHref}
-              legacyMode={legacyIosSafariMode}
               preferInitialCount={initialReaderState?.hasCountQuery}
               quranScript={quranScript}
-              readerMode
               resetNonce={resetNonce}
               storageKey={`${data.slug}-count-${activeIndex}`}
-              touchMode={touchMode}
               theme={theme}
               timeMode={timeMode}
             />
@@ -430,11 +450,13 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
         </div>
 
         <div className="reader-bottom-nav">
-          <a className="reader-mode-nav-button" href={previousHref} onClick={(event) => runAsSpa(event, showPrevious)}>
-            Sebelumnya
+          <a className="reader-mode-nav-button reader-mode-nav-prev" href={previousHref} onClick={(event) => runAsSpa(event, showPrevious)}>
+            <span className="reader-mode-nav-icon" aria-hidden="true">&lsaquo;</span>
+            <span className="reader-mode-nav-label">Sebelumnya</span>
           </a>
-          <a className="reader-mode-nav-button" href={nextHref} onClick={(event) => runAsSpa(event, showNext)}>
-            Berikutnya
+          <a className="reader-mode-nav-button reader-mode-nav-next" href={nextHref} onClick={(event) => runAsSpa(event, showNext)}>
+            <span className="reader-mode-nav-label">Berikutnya</span>
+            <span className="reader-mode-nav-icon" aria-hidden="true">&rsaquo;</span>
           </a>
         </div>
       </section>

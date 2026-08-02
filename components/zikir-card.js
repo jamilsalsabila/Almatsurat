@@ -1,16 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { applyTimeMode } from "@/lib/time-mode";
-
-const arabicDigits = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
-
-function toArabicNumber(value) {
-  return String(value)
-    .split("")
-    .map((char) => (/\d/.test(char) ? arabicDigits[Number(char)] : char))
-    .join("");
-}
+import { toArabicNumber } from "@/lib/arabic-numerals";
 
 export default function ZikirCard({
   card,
@@ -19,22 +11,17 @@ export default function ZikirCard({
   theme,
   fontSizePt = 12,
   index,
-  legacyHrefBuilder = null,
-  legacyMode = false,
-  onFocus,
+  legacyHrefBuilder,
   preferInitialCount = false,
   quranScript = "uthmani",
   resetNonce = 0,
   storageKey,
-  readerMode = false,
-  touchMode = false,
   timeMode = "pagi",
 }) {
   const [count, setCount] = useState(currentCount);
   const progress = Math.min((count / card.count) * 100, 100);
   const complete = count >= card.count;
   const [isPressing, setIsPressing] = useState(false);
-  const lastTouchRef = useRef(0);
   const basmallahEntries = card.entries.filter((entry) => entry.type === "basmallah");
   const mainEntries = card.entries.filter((entry) => entry.type !== "basmallah");
 
@@ -56,7 +43,7 @@ export default function ZikirCard({
     if (Number.isFinite(parsed) && parsed >= 0) {
       setCount(Math.min(parsed, card.count));
     }
-  }, [card.count, currentCount, legacyMode, preferInitialCount, storageKey]);
+  }, [card.count, currentCount, preferInitialCount, storageKey]);
 
   useEffect(() => {
     if (!storageKey || typeof window === "undefined") {
@@ -83,33 +70,11 @@ export default function ZikirCard({
     handleTap();
   }
 
-  function bindTouchPress(action) {
-    return {
-      onClick: () => {
-        if (touchMode && Date.now() - lastTouchRef.current < 500) {
-          return;
-        }
-        action();
-      },
-      onTouchStart: (event) => {
-        if (!touchMode) {
-          return;
-        }
-        event.preventDefault();
-        event.stopPropagation();
-        lastTouchRef.current = Date.now();
-        action();
-      },
-    };
-  }
-
-  const dynamicFontVars = readerMode
-    ? {
-        "--reader-quran-size": `${fontSizePt}pt`,
-        "--reader-doa-size": `${Math.max(fontSizePt - 1, 1)}pt`,
-        "--reader-basmallah-size": `${fontSizePt + 1}pt`,
-      }
-    : {};
+  const dynamicFontVars = {
+    "--reader-quran-size": `${fontSizePt}pt`,
+    "--reader-doa-size": `${Math.max(fontSizePt - 1, 1)}pt`,
+    "--reader-basmallah-size": `${fontSizePt + 1}pt`,
+  };
   const accentColor = darkMode ? theme.darkAccent : theme.accent;
   const accentLine = darkMode ? `${theme.darkAccent}28` : `${theme.accent}14`;
   const repeatBorder = darkMode ? `${theme.darkAccent}30` : `${theme.accent}20`;
@@ -119,11 +84,11 @@ export default function ZikirCard({
   const counterLabelColor = darkMode ? "rgba(235, 241, 243, 0.86)" : theme.accent;
   const counterValueColor = darkMode ? "#f2f5f6" : theme.accent;
   const nextLegacyCount = count >= card.count ? 0 : count + 1;
-  const legacyCountHref = legacyHrefBuilder ? legacyHrefBuilder({ currentCount: nextLegacyCount }) : "#";
+  const legacyCountHref = legacyHrefBuilder({ currentCount: nextLegacyCount });
 
   return (
     <article
-      className={`zikir-card mushaf-card quran-script-${quranScript}${readerMode ? " reader-card" : ""}${darkMode ? " reader-dark-card" : ""}`}
+      className={`zikir-card mushaf-card reader-card quran-script-${quranScript}${darkMode ? " reader-dark-card" : ""}`}
       style={{ borderColor: accentLine, ...dynamicFontVars }}
     >
       <div className="zikir-card-header mushaf-card-header">
@@ -142,11 +107,9 @@ export default function ZikirCard({
         </div>
       </div>
 
-      {readerMode ? (
-        <div className="reader-context" style={{ color: contextColor }}>
-          {timeMode === "pagi" ? "Mode pagi" : "Mode petang"}
-        </div>
-      ) : null}
+      <div className="reader-context" style={{ color: contextColor }}>
+        {timeMode === "pagi" ? "Mode pagi" : "Mode petang"}
+      </div>
 
       <div className="zikir-card-body mushaf-card-body">
         {basmallahEntries.length > 0 ? (
@@ -168,88 +131,43 @@ export default function ZikirCard({
       </div>
 
       <div className="counter-area mushaf-counter-area">
-        {!readerMode && onFocus ? (
-          <div className="mushaf-actions">
-            <button className="mushaf-focus-button" {...bindTouchPress(onFocus)} type="button">
-              Fokus bacaan
-            </button>
-          </div>
-        ) : null}
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${progress}%`, backgroundColor: theme.accentStrong }} />
         </div>
-        {legacyHrefBuilder ? (
-          <a className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`} href={legacyCountHref} onClick={handleTapLink}>
-            <div className="counter-copy">
-              <span className="counter-label" style={{ color: counterLabelColor }}>
-                Hitungan bacaan
-              </span>
-              <div className="counter-inline">
-                <span className="counter-value" style={{ color: counterValueColor }}>
-                  {count} / {card.count}
-                </span>
-                <span className="counter-hint">
-                  {complete ? "Ketuk untuk mengulang dari awal." : "Ketuk untuk menambah hitungan."}
-                </span>
-              </div>
-            </div>
-            <span
-              className="counter-done mushaf-counter-button"
-              style={{
-                backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
-                color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
-                borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
-              }}
-            >
-              {complete ? "Ulangi" : "Tap"}
+        <a
+          className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`}
+          href={legacyCountHref}
+          onClick={handleTapLink}
+          onPointerDown={() => setIsPressing(true)}
+          onPointerUp={() => setIsPressing(false)}
+          onPointerLeave={() => setIsPressing(false)}
+          onPointerCancel={() => setIsPressing(false)}
+        >
+          <div className="counter-copy">
+            <span className="counter-label" style={{ color: counterLabelColor }}>
+              Hitungan bacaan
             </span>
-          </a>
-        ) : (
-          <button
-            className={`tap-zone mushaf-tap-zone${isPressing ? " is-pressing" : ""}`}
-            type="button"
-            {...bindTouchPress(handleTap)}
-            onPointerDown={() => setIsPressing(true)}
-            onPointerUp={() => setIsPressing(false)}
-            onPointerLeave={() => setIsPressing(false)}
-            onPointerCancel={() => setIsPressing(false)}
+            <div className="counter-inline">
+              <span className="counter-value" style={{ color: counterValueColor }}>
+                {count} / {card.count}
+              </span>
+              <span className="counter-hint">
+                {complete ? "Ketuk untuk mengulang dari awal." : "Ketuk untuk menambah hitungan."}
+              </span>
+            </div>
+          </div>
+          <span
+            className="counter-done mushaf-counter-button"
+            style={{
+              backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
+              color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
+              borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
+            }}
           >
-            <div className="counter-copy">
-              <span className="counter-label" style={{ color: counterLabelColor }}>
-                Hitungan bacaan
-              </span>
-              <div className="counter-inline">
-                <span className="counter-value" style={{ color: counterValueColor }}>
-                  {count} / {card.count}
-                </span>
-                <span className="counter-hint">
-                  {complete ? "Ketuk untuk mengulang dari awal." : "Ketuk untuk menambah hitungan."}
-                </span>
-              </div>
-            </div>
-            <span
-              className="counter-done mushaf-counter-button"
-              style={{
-                backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
-                color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
-                borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
-              }}
-            >
-              {complete ? "Ulangi" : "Tap"}
-            </span>
-          </button>
-        )}
-      </div>
-
-      {!readerMode ? (
-        <div className="mushaf-divider" aria-hidden="true">
-          <span className="mushaf-divider-line" style={{ backgroundColor: `${theme.accent}20` }} />
-          <span className="mushaf-divider-mark" style={{ color: `${theme.accent}90` }}>
-            ۞
+            {complete ? "Ulangi" : "Tap"}
           </span>
-          <span className="mushaf-divider-line" style={{ backgroundColor: `${theme.accent}20` }} />
-        </div>
-      ) : null}
+        </a>
+      </div>
     </article>
   );
 }
