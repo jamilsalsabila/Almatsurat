@@ -13,9 +13,37 @@ const naskh = localFont({
   display: "swap",
 });
 
+const SITE_URL = "https://almatsurat-zeta.vercel.app";
+const SITE_DESCRIPTION =
+  "Bacaan Al-Ma'tsurat Sugro dan Kubro dalam tampilan yang tenang, rapi, dan nyaman untuk dibaca lama di layar ponsel.";
+
 export const metadata = {
-  title: "Almatsurat Web",
-  description: "Versi website Almatsurat Sugro dan Kubro berbasis Next.js, siap deploy ke Vercel.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Almatsurat Web — Bacaan Al-Ma'tsurat Sugro & Kubro",
+    template: "%s | Almatsurat Web",
+  },
+  description: SITE_DESCRIPTION,
+  keywords: ["Al-Ma'tsurat", "Almatsurat", "wazifah", "dzikir pagi petang", "Sugro", "Kubro", "Hasan Al-Banna"],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: SITE_URL,
+    siteName: "Almatsurat Web",
+    title: "Almatsurat Web — Bacaan Al-Ma'tsurat Sugro & Kubro",
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Almatsurat Web — Bacaan Al-Ma'tsurat Sugro & Kubro",
+    description: SITE_DESCRIPTION,
+  },
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }) {

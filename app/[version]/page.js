@@ -22,9 +22,28 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { version } = await params;
   const theme = getTheme(version);
+  const description = `${theme.title} — ${theme.subtitle} Baca Al-Ma'tsurat ${theme.label} dengan tampilan mushaf modern, mode fokus, dan penghitung bacaan.`;
+
   return {
-    title: `${theme.label} | Almatsurat Web`,
-    description: theme.subtitle,
+    title: theme.label,
+    description,
+    alternates: {
+      canonical: `/${theme.slug}`,
+    },
+    openGraph: {
+      type: "website",
+      locale: "id_ID",
+      siteName: "Almatsurat Web",
+      url: `/${theme.slug}`,
+      title: `${theme.label} — Almatsurat Web`,
+      description,
+      images: ["/opengraph-image"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${theme.label} — Almatsurat Web`,
+      description,
+    },
   };
 }
 
