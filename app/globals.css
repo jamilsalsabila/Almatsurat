@@ -778,6 +778,12 @@ button {
   padding: 0 16px 12px;
 }
 
+@media (min-width: 861px) {
+  .reader-card .zikir-card-header {
+    padding-bottom: 20px;
+  }
+}
+
 .reader-context {
   padding: 4px 16px 0;
   font-size: 13px;
