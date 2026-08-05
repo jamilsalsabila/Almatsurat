@@ -782,6 +782,10 @@ button {
   .reader-card .zikir-card-header {
     padding-bottom: 20px;
   }
+
+  .reader-card.mushaf-card::before {
+    inset: 92px 0 0;
+  }
 }
 
 .reader-context {
