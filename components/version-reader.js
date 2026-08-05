@@ -66,6 +66,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
       return;
     }
     window.localStorage.setItem(`${data.slug}-active-index`, String(activeIndex));
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("i", String(activeIndex));
+    window.history.replaceState(window.history.state, "", `${window.location.pathname}?${params.toString()}`);
   }, [activeIndex, data.slug]);
 
   useEffect(() => {
