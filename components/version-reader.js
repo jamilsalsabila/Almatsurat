@@ -29,6 +29,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   const [controlsVisible, setControlsVisible] = useState(false);
   const touchStartRef = useRef(null);
   const hideControlsTimeoutRef = useRef(null);
+  const cardStageRef = useRef(null);
   const lastWrittenFontRef = useRef(initialReaderState?.fontSizePt ?? DEFAULT_FONT_PT);
   const lastWrittenScriptRef = useRef(normalizeScript(initialReaderState?.quranScript));
   const lastWrittenTimeModeRef = useRef(initialReaderState?.timeMode ?? "pagi");
@@ -147,6 +148,28 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
       }
     };
   }, []);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (mobileSettingsOpen || event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        showPrevious();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        showNext();
+      } else if (event.key === " " || event.key === "Spacebar") {
+        event.preventDefault();
+        cardStageRef.current?.querySelector(".tap-zone")?.click();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileSettingsOpen]);
 
   function revealControls() {
     setControlsVisible(true);
@@ -412,6 +435,7 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
         <div
           className={`reader-card-stage ${navDirection === "previous" ? "is-from-previous" : "is-from-next"}`}
           key={`${activeCard.titleArabic}-${activeIndex}-${timeMode}`}
+          ref={cardStageRef}
         >
           <ZikirCard
             card={activeCard}
