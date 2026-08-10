@@ -234,7 +234,6 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
 
     const touch = event.touches[0];
     touchStartRef.current = { x: touch.clientX, y: touch.clientY };
-    revealControls();
   }
 
   function handleFrameTouchEnd(event) {
@@ -244,6 +243,13 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
     if (!start || mobileSettingsOpen) {
       return;
     }
+
+    // Deferred to the next tick so this state update (and the class change it
+    // causes on .reader-mode-frame) lands after the browser has already
+    // decided whether to synthesize a click for this touch. Doing it inline
+    // on touchstart/touchend made WebKit swallow the click on the tap-zone,
+    // requiring a second tap once the arrows had faded out.
+    window.setTimeout(revealControls, 0);
 
     const touch = event.changedTouches[0];
     const deltaX = touch.clientX - start.x;
