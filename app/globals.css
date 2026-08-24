@@ -165,6 +165,7 @@ button {
 
 .site-shell {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .scenic-shell {
@@ -359,6 +360,8 @@ button {
   background: rgba(255, 255, 255, 0.86);
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: var(--shadow-card);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 .mushaf-home {
@@ -1372,12 +1375,14 @@ button {
   position: relative;
   border: 1px solid;
   padding: 20px 22px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.68);
   box-shadow: var(--shadow-card);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   transition: transform 160ms ease, box-shadow 160ms ease;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 .version-list-card:active {
@@ -1511,9 +1516,43 @@ button {
     text-align: center;
   }
 
+  .reader-mode-shell {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reader-legacy-mobile.reader-mode-shell {
+    min-height: 0;
+  }
+
   .reader-mode-frame {
     padding: 12px 12px 14px;
     border-radius: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .reader-legacy-mobile .reader-mode-frame {
+    flex: none;
+  }
+
+  .reader-card-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  .reader-card-stage > .zikir-card {
+    flex-shrink: 0;
+    width: 100%;
   }
 
   .reader-mode-edge {

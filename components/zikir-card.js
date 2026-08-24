@@ -171,9 +171,9 @@ export default function ZikirCard({
           <span
             className="counter-done mushaf-counter-button"
             style={{
-              backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${theme.chip}18`,
-              color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : theme.chip,
-              borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${theme.chip}30`,
+              backgroundColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}18` : `${(darkMode ? theme.darkChip : theme.chip)}18`,
+              color: complete ? (darkMode ? theme.darkAccent : theme.accentStrong) : (darkMode ? theme.darkChip : theme.chip),
+              borderColor: complete ? `${darkMode ? theme.darkAccent : theme.accentStrong}2d` : `${(darkMode ? theme.darkChip : theme.chip)}30`,
             }}
           >
             {complete ? "Ulangi" : "Tap"}
