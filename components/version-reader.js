@@ -227,7 +227,10 @@ export default function VersionReader({ data, darkMode = false, initialReaderSta
   }
 
   function handleFrameTouchStart(event) {
-    if (mobileSettingsOpen || event.touches.length !== 1) {
+    // Taps on the counter never need the prev/next arrows revealed, and letting
+    // them through here is what caused WebKit to swallow the click on repeat
+    // taps (the deferral below only fixed it for the first tap after a swipe).
+    if (mobileSettingsOpen || event.touches.length !== 1 || event.target.closest(".tap-zone")) {
       touchStartRef.current = null;
       return;
     }
